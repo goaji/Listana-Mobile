@@ -1,12 +1,15 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 import Colors from "../constants/colors";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const numberOfMovies = 5;
 
 const AccountScreen = (props) => {
   return (
-    <View style={styles.container}>
-      <Text>Account Screen</Text>
-    </View>
+    <SafeAreaView>
+      <Text>Account screen</Text>
+    </SafeAreaView>
   );
 };
 

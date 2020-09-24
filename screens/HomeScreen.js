@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, Modal } from "react-native";
 import Colors from "../constants/colors";
 import MovieDetails from "../components/movieDetails";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeScreen = (props) => {
   //movie popup state handling
@@ -18,13 +19,13 @@ const HomeScreen = (props) => {
   );
   console.log(activeUserLists);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* <Modal visible={false}>
         <MovieDetails hidePoster={moviePosterVisibilityHandler} />
       </Modal> */}
       <Text>{activeUser.userId}</Text>
       <Text>{activeUserLists.length}</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

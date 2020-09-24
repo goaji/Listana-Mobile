@@ -8,7 +8,8 @@ import { Clipboard } from "react-native";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
-import myReducers from "./store/reducers/lists";
+import myReducers from "./store/reducers/listsReducer";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const rootReducer = combineReducers({
   mainReducer: myReducers,

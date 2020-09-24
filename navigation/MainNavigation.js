@@ -2,6 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../constants/colors";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -12,15 +13,28 @@ import ListDetailsScreen from "../screens/ListDetailsScreen";
 import ListsScreen from "../screens/ListsScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
 import SearchScreen from "../screens/SearchScreen";
-import { setStatusBarBackgroundColor } from "expo-status-bar";
 import MyMoviesScreen from "../screens/MyMoviesScreen";
 
-const MainStack = createBottomTabNavigator();
+const MainTab = createBottomTabNavigator();
+const List = createStackNavigator();
+
+const ListStack = (props) => {
+  return (
+    <List.Navigator
+      initialRouteName="MyLists"
+      backBehavior="none"
+      headerMode="false"
+    >
+      <List.Screen name="MyLists" component={ListsScreen} />
+      <List.Screen name="ListDetails" component={ListDetailsScreen} />
+    </List.Navigator>
+  );
+};
 
 const MainNavigator = (props) => {
   return (
     <NavigationContainer independent={true}>
-      <MainStack.Navigator
+      <MainTab.Navigator
         initialRouteName="Home"
         backBehavior="none"
         tabBarOptions={{
@@ -35,7 +49,7 @@ const MainNavigator = (props) => {
           },
         }}
       >
-        <MainStack.Screen
+        <MainTab.Screen
           name="Home"
           component={HomeScreen}
           options={{
@@ -49,7 +63,7 @@ const MainNavigator = (props) => {
             ),
           }}
         />
-        <MainStack.Screen
+        <MainTab.Screen
           name="MyMovies"
           component={MyMoviesScreen}
           options={{
@@ -63,9 +77,9 @@ const MainNavigator = (props) => {
             ),
           }}
         />
-        <MainStack.Screen
+        <MainTab.Screen
           name="MyLists"
-          component={ListsScreen}
+          component={ListStack}
           options={{
             tabBarLabel: "Lists",
             tabBarIcon: ({ focused, color, size }) => (
@@ -77,7 +91,7 @@ const MainNavigator = (props) => {
             ),
           }}
         />
-        <MainStack.Screen
+        <MainTab.Screen
           name="Search"
           component={SearchScreen}
           options={{
@@ -92,7 +106,7 @@ const MainNavigator = (props) => {
           }}
         />
 
-        <MainStack.Screen
+        <MainTab.Screen
           name="AccountScreen"
           component={AccountScreen}
           options={{
@@ -106,7 +120,7 @@ const MainNavigator = (props) => {
             ),
           }}
         />
-      </MainStack.Navigator>
+      </MainTab.Navigator>
     </NavigationContainer>
   );
 };

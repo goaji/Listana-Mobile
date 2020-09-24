@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Modal } from "react-native";
 import Colors from "../constants/colors";
 import MovieDetails from "../components/movieDetails";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SearchScreen = (props) => {
   const [moviePosterVisibility, moviePosterVisibilityHandler] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.button}
         onPress={() => moviePosterVisibilityHandler(true)}
@@ -23,7 +24,7 @@ const SearchScreen = (props) => {
           <MovieDetails hidePoster={moviePosterVisibilityHandler} />
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
