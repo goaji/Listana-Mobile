@@ -17,7 +17,6 @@ const HomeScreen = (props) => {
   const activeUserLists = allLists.filter(
     (list) => list.ownerId === activeUser.userId
   );
-  console.log(activeUserLists);
   return (
     <SafeAreaView style={styles.container}>
       {/* <Modal visible={false}>

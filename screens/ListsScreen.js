@@ -9,10 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ListsScreen = (props) => {
   //movie popup state handling
   const [moviePosterVisibility, moviePosterVisibilityHandler] = useState(false);
+  const [clickedList, clickedListHandler] = useState(null);
 
   //getting the content of the Users Array and then finding the one is logged in
   const myUsers = useSelector((state) => state.mainReducer.users);
-  const activeUser = myUsers.find((user) => user.userId === "03");
+  const activeUser = myUsers.find((user) => user.userId === "01");
   //getting the content of the Lists array and the keeping only those that belong to the active user
   const allLists = useSelector((state) => state.mainReducer.myLists);
   const activeUserLists = allLists.filter(
@@ -28,6 +29,8 @@ const ListsScreen = (props) => {
             listTitle={itemData.item.listName}
             numberOfMovies={itemData.item.movies.length}
             listId={itemData.item.listId}
+            isClicked={clickedList}
+            isClickedHandler={clickedListHandler}
           />
         )}
       />

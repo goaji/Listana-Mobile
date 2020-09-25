@@ -7,7 +7,7 @@ const numberOfMovies = 5;
 
 const AccountScreen = (props) => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Text>Account screen</Text>
     </SafeAreaView>
   );
@@ -15,6 +15,7 @@ const AccountScreen = (props) => {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     justifyContent: "center",
     backgroundColor: Colors.fifthColor,

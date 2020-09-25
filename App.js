@@ -5,17 +5,17 @@ import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import AppStartNavigator from "./navigation/AppStartNavigation";
 import { Clipboard } from "react-native";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
+import ReduxThunk from "redux-thunk";
 
 import myReducers from "./store/reducers/listsReducer";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const rootReducer = combineReducers({
   mainReducer: myReducers,
 });
 
-const myStore = createStore(rootReducer);
+const myStore = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 // HACK: Prevent "Expo pasted from CoreSimulator" notification from spamming continuously
 if (__DEV__) {
