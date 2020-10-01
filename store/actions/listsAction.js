@@ -1,6 +1,7 @@
 export const REMOVE_MOVIE_FROM_LIST = "REMOVE_MOVIE_FROM_LIST";
 export const REMOVE_LIST = "REMOVE_LIST";
 export const ADD_LIST = "ADD_LIST";
+export const SAVE_SEARCH_RESULTS = "SAVE_SEARCH_RESULTS";
 import ListDatabase from "../../models/listsDatabase";
 
 export const addList = (listName, movies, ownerId) => {
@@ -42,4 +43,8 @@ export const removeMovieFromList = (arrayId, listId) => {
 
 export const removeList = (listId) => {
   return { type: REMOVE_LIST, currentListId: listId };
+};
+
+export const saveSearchResults = (movieResults) => {
+  return { type: SAVE_SEARCH_RESULTS, movieResults };
 };
