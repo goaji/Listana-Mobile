@@ -15,7 +15,7 @@ const AppStartNavigator = (props) => {
     <SafeAreaProvider style={styles.safeArea}>
       <NavigationContainer>
         <MyStack.Navigator
-          initialRouteName="SignIn=Screen"
+          initialRouteName="SignInScreen"
           backBehavior="none"
           screenOptions={{ headerShown: false }}
         >

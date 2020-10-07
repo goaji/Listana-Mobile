@@ -10,9 +10,11 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
 import myReducers from "./store/reducers/listsReducer";
+import authReducer from "./store/reducers/authReducers";
 
 const rootReducer = combineReducers({
   mainReducer: myReducers,
+  authReducers: authReducer,
 });
 
 const myStore = createStore(rootReducer, applyMiddleware(ReduxThunk));

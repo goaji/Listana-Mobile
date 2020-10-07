@@ -22,7 +22,7 @@ const HomeScreen = (props) => {
       {/* <Modal visible={false}>
         <MovieDetails hidePoster={moviePosterVisibilityHandler} />
       </Modal> */}
-      <Text>{activeUser.userId}</Text>
+      <Text style={{ color: "white" }}>{activeUser.userId}</Text>
       <Text>{activeUserLists.length}</Text>
     </SafeAreaView>
   );
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.fifthColor,
+    backgroundColor: Colors.secondColor,
   },
 });
 

@@ -1,110 +1,218 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import React, { useState, useReducer } from "react";
+import { useNavigation } from "@react-navigation/native";
+
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ImageBackground,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
 import Colors from "../constants/colors";
-
-import SplashButtonContainer from "../components/splashScreen/splashButtonContainer";
-import RegisterForm from "../components/splashScreen/registerForm";
-import LoginForm from "../components/splashScreen/loginForm";
-
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector, useDispatch } from "react-redux";
+import * as authActions from "../store/actions/authActions";
+import { SafeAreaView } from "react-native-safe-area-context";
 const { width, height } = Dimensions.get("window");
 
 const SigninScreen = (props) => {
-  const [mainContainerVisibility, setMainContainerVisibility] = useState(true);
-  const [loginFormVisibility, setLoginFormVisibility] = useState(false);
-  const [registerFormVisibility, setRegisterFormVisibility] = useState(false);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-  const buttonsContainerVisibilityHandler = (buttonPressed) => {
-    if (buttonPressed === "login") {
-      setMainContainerVisibility(false);
-      setRegisterFormVisibility(false);
-      setLoginFormVisibility(true);
-    } else if (buttonPressed === "register") {
-      setMainContainerVisibility(false);
-      setLoginFormVisibility(false);
-      setRegisterFormVisibility(true);
-    } else if (buttonPressed === "cancel") {
-      setLoginFormVisibility(false);
-      setRegisterFormVisibility(false);
-      setMainContainerVisibility(true);
-    } else if (buttonPressed === "register-complete") {
-      setLoginFormVisibility(false);
-      setRegisterFormVisibility(false);
-      setMainContainerVisibility(true);
-    } else if (buttonPressed === "login-complete") {
-      props.navigation.navigate("MainScreen");
+  const [isLogin, setIsLogin] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
+  //don't forget to specify state.`whateverreduceryouneed`.variable
+  const loggedInUser = useSelector((state) => state.authReducers.loggedInUser);
+  if (loggedInUser != "nouser") {
+    console.log("loggedInuser", loggedInUser);
+    navigation.navigate("MainScreen");
+  }
+  const loginHandler = () => {
+    if (isLogin) {
+      //try to login
+      setIsLogin(false);
+      dispatch(authActions.login(emailValue, passwordValue));
+
+      setEmailValue("");
+      setPasswordValue("");
+    } else {
+      //show the fields
+      setIsLogin(true);
     }
+  };
+  const registerHandler = () => {
+    if (isRegister) {
+      //try to register
+      setIsRegister(false);
+      dispatch(authActions.register(emailValue, passwordValue));
+      setEmailValue("");
+      setPasswordValue("");
+    } else {
+      //show register fields
+      setIsRegister(true);
+    }
+  };
+  const cancelHandler = () => {
+    setEmailValue("");
+    setPasswordValue("");
+    setIsLogin(false);
+    setIsRegister(false);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ ...StyleSheet.absoluteFill }}>
-        <Image
-          source={require("../assets/images/bg.jpg")}
-          style={styles.backgroundImage}
-        />
-      </View>
-      <View style={styles.titlesContainer}>
-        <Text style={styles.mainTitle}>LISTANA</Text>
-        <Text style={styles.secondTitle}>Movies you've seen.</Text>
-        <Text style={styles.secondTitle}>Movies you love.</Text>
-        <Text style={styles.secondTitle}>Movies you'll never forget.</Text>
-      </View>
-      <View style={styles.emptyContainer}></View>
-      <View style={styles.buttonContainer}>
-        {mainContainerVisibility && (
-          <SplashButtonContainer
-            buttonsContainerVisibility={buttonsContainerVisibilityHandler}
+    <SafeAreaView style={styles.safeArea}>
+      <ImageBackground
+        source={require("../assets/images/loginpage.png")}
+        style={styles.container}
+      >
+        <View style={styles.upperThird}>
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/logoListana.png")}
           />
-        )}
-        {registerFormVisibility && (
-          <RegisterForm
-            buttonsContainerVisibility={buttonsContainerVisibilityHandler}
-          />
-        )}
-        {loginFormVisibility && (
-          <LoginForm
-            buttonsContainerVisibility={buttonsContainerVisibilityHandler}
-          />
-        )}
-      </View>
-    </View>
+          <Text style={styles.mainTitle}>LISTANA</Text>
+        </View>
+        <View style={styles.middleThird}>
+          <Text style={styles.secondTitle}>Movies you've seen.</Text>
+          <Text style={styles.secondTitle}>Movies you love.</Text>
+          <Text style={styles.secondTitle}>Movies you'll never forget.</Text>
+        </View>
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={20}
+          style={styles.bottomThird}
+        >
+          {(isLogin || isRegister) && (
+            <View>
+              <TextInput
+                autoCapitalize="none"
+                value={emailValue}
+                onChangeText={(value) => setEmailValue(value)}
+                style={styles.textInput}
+              />
+              <TextInput
+                autoCapitalize="none"
+                value={passwordValue}
+                onChangeText={(value) => setPasswordValue(value)}
+                style={styles.textInput}
+              />
+            </View>
+          )}
+          <View style={styles.loginContainer}>
+            {(isLogin || (!isLogin && !isRegister)) && (
+              <TouchableOpacity onPress={loginHandler} style={styles.button}>
+                <Text style={styles.textButton}>Login</Text>
+              </TouchableOpacity>
+            )}
+            {isLogin && (
+              <TouchableOpacity onPress={cancelHandler} style={styles.button}>
+                <Text style={styles.textButton}>Cancel</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          {!isLogin && !isRegister && (
+            <Text style={styles.accountText}>Don't have an account yet?</Text>
+          )}
+          <View style={styles.loginContainer}>
+            {(isRegister || (!isLogin && !isRegister)) && (
+              <TouchableOpacity onPress={registerHandler} style={styles.button}>
+                <Text style={styles.textButton}>Register</Text>
+              </TouchableOpacity>
+            )}
+            {isRegister && (
+              <TouchableOpacity onPress={cancelHandler} style={styles.button}>
+                <Text style={styles.textButton}>Cancel</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  textInput: {
+    width: 270,
+    height: 30,
+    backgroundColor: Colors.sixthColor,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  textButton: {
+    textAlign: "center",
+    color: Colors.sixthColor,
+    fontSize: 20,
+    fontFamily: "roboto-medium",
+  },
+  accountText: {
+    textAlign: "center",
+    color: Colors.sixthColor,
+    marginVertical: 10,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: Colors.fourthColor,
+    width: 125,
+    height: 50,
+    justifyContent: "center",
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: Colors.thirdColor,
+    marginHorizontal: 10,
+  },
+  logo: {
+    height: "30%",
+    resizeMode: "contain",
+    marginBottom: 10,
+  },
+  upperThird: {
+    flex: 1.5,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  middleThird: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+  bottomThird: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: Colors.firstColor,
-  },
-  backgroundImage: {
-    flex: 1,
-    height: null,
-    width: null,
-  },
-  titlesContainer: {
-    height: height / 2,
     alignItems: "center",
-    justifyContent: "center",
+    marginBottom: 50,
   },
+  container: {
+    flex: 1,
+  },
+
   mainTitle: {
     fontSize: 50,
-    color: Colors.secondColor,
+    color: Colors.sixthColor,
     textAlign: "center",
     paddingBottom: 20,
+    fontFamily: "roboto-medium",
+    letterSpacing: 4,
   },
   secondTitle: {
-    fontSize: 25,
-    color: Colors.thirdColor,
+    fontSize: 20,
+    color: Colors.sixthColor,
     textAlign: "center",
     paddingBottom: 5,
-  },
-  buttonContainer: {
-    height: height / 6,
-    backgroundColor: Colors.fourthColor,
-  },
-  emptyContainer: {
-    height: height / 3,
+    fontFamily: "roboto-light",
   },
 });
 

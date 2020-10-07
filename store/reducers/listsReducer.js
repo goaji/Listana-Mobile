@@ -7,11 +7,13 @@ import {
   SAVE_SEARCH_RESULTS,
 } from "../actions/listsAction";
 import ListDatabase from "../../models/listsDatabase";
+
 const initialState = {
   myLists: LISTS,
   users: USERS,
   searchResults: null,
 };
+
 //this is very important: state will be initialized with initialState only if state is undefine
 //so basicaly only the first time - ES6 feature, you can set a default value for undefined cases
 export default (state = initialState, action) => {
