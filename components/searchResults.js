@@ -32,8 +32,8 @@ const SearchResults = (props) => {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity onPress={() => {}} style={styles.movieContainer}>
-              <Text>{item.title}</Text>
-              <Text>{item.release_date}</Text>
+              <Text style={styles.textResults}>{item.title}</Text>
+              <Text style={styles.textResults}>{item.release_date}</Text>
             </TouchableOpacity>
           );
         }}
@@ -43,6 +43,9 @@ const SearchResults = (props) => {
 };
 
 const styles = StyleSheet.create({
+  textResults: {
+    color: Colors.sixthColor,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

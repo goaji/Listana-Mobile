@@ -27,9 +27,8 @@ const SigninScreen = (props) => {
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   //don't forget to specify state.`whateverreduceryouneed`.variable
-  const loggedInUser = useSelector((state) => state.authReducers.loggedInUser);
+  const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
   if (loggedInUser != "nouser") {
-    console.log("loggedInuser", loggedInUser);
     navigation.navigate("MainScreen");
   }
   const loginHandler = () => {

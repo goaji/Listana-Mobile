@@ -6,6 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../constants/colors";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import HomeScreen from "../screens/HomeScreen";
 import AccountScreen from "../screens/AccountScreen";
@@ -45,7 +46,7 @@ const MainNavigator = (props) => {
             flex: 0.07,
             alignContent: "center",
             padding: 10,
-            backgroundColor: Colors.fifthColor,
+            backgroundColor: Colors.secondColor,
             position: "absolute",
             borderTopLeftRadius: 25,
             borderTopRightRadius: 25,
@@ -62,7 +63,7 @@ const MainNavigator = (props) => {
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
                 name="home"
-                color={focused ? Colors.thirdColor : Colors.sixthColor}
+                color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />
             ),
@@ -76,7 +77,7 @@ const MainNavigator = (props) => {
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
                 name="video"
-                color={focused ? Colors.thirdColor : Colors.sixthColor}
+                color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />
             ),
@@ -90,7 +91,7 @@ const MainNavigator = (props) => {
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
                 name="view-list"
-                color={focused ? Colors.thirdColor : Colors.sixthColor}
+                color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />
             ),
@@ -104,7 +105,7 @@ const MainNavigator = (props) => {
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
                 name="feature-search"
-                color={focused ? Colors.thirdColor : Colors.sixthColor}
+                color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />
             ),
@@ -119,7 +120,7 @@ const MainNavigator = (props) => {
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
                 name="account-box"
-                color={focused ? Colors.thirdColor : Colors.sixthColor}
+                color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />
             ),

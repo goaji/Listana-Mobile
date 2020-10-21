@@ -14,7 +14,7 @@ import authReducer from "./store/reducers/authReducers";
 
 const rootReducer = combineReducers({
   mainReducer: myReducers,
-  authReducers: authReducer,
+  authReducer: authReducer,
 });
 
 const myStore = createStore(rootReducer, applyMiddleware(ReduxThunk));

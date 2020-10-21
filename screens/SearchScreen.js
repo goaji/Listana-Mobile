@@ -20,7 +20,7 @@ const SearchScreen = (props) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-
+  //something is wrong with this async
   const searchTMDB = async (searchValue) => {
     const query = searchValue;
     const url = `https://api.themoviedb.org/3/search/movie?api_key=929232d9b0b2af7e953d17654808d31f&language=en-US&query=${query}&include_adult=false`;

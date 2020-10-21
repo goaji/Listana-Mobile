@@ -20,7 +20,6 @@ export const addList = (listName, movies, ownerId) => {
     );
 
     const responseData = await response.json();
-    console.log(responseData);
 
     dispatch({
       type: ADD_LIST,
