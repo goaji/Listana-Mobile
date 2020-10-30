@@ -29,6 +29,11 @@ const SigninScreen = (props) => {
   //don't forget to specify state.`whateverreduceryouneed`.variable
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
   if (loggedInUser != "nouser") {
+    dispatch(authActions.userDbInit(loggedInUser));
+    dispatch(authActions.comingMoviesInit(loggedInUser));
+    console.log("Initializing");
+    dispatch(authActions.recentMoviesInit(loggedInUser));
+
     navigation.navigate("MainScreen");
   }
   const loginHandler = () => {

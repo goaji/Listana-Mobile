@@ -13,11 +13,13 @@ import { useSelector, useDispatch } from "react-redux";
 import * as authActions from "../store/actions/authActions";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput } from "react-native-paper";
+import { FlatList } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = (props) => {
   const dispatch = useDispatch();
+
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
   const isFirstTime = useSelector(
     (state) => state.authReducer.ourUserDatabase.firstTimeLogin
@@ -41,7 +43,7 @@ const HomeScreen = (props) => {
         loggedInUser
       )
     );
-    dispatch(authActions.reinitialize(loggedInUser));
+    dispatch(authActions.userDbInit(loggedInUser));
   };
 
   return (
@@ -52,21 +54,33 @@ const HomeScreen = (props) => {
         style={styles.imageBackground}
       >
         <View style={styles.homeScreenContainer}>
+          {/* title section */}
           <View style={styles.container1}>
             <Text style={styles.helloText}>
               Hello, {firstName} {lastName}.
             </Text>
             <Text style={styles.helloText}>Welcome back!</Text>
           </View>
+
+          {/* recently launched section */}
           <View style={styles.container2}>
-            <Text style={styles.titleText}>New movies</Text>
+            <Text style={styles.titleText}>Recently launched</Text>
+            {/* https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en-US&page=1 */}
           </View>
+
+          {/* upcoming movies section */}
           <View style={styles.container3}>
+            <Text style={styles.titleText}>Upcoming movies</Text>
+            <FlatList horizontal={true} />
+            {/* https://api.themoviedb.org/3/movie/upcoming?api_key=<<api_key>>&language=en-US&page=1 */}
+          </View>
+
+          {/* last added section */}
+          <View style={styles.container4}>
             <Text style={styles.titleText}>Last added</Text>
           </View>
-          <View style={styles.container4}>
-            <Text style={styles.titleText}>New movies</Text>
-          </View>
+
+          {/* this space will be empty, under the bottom menu */}
           <View style={styles.underMenu}></View>
         </View>
         <Modal visible={isFirstTime} transparent={true}>
@@ -122,10 +136,10 @@ const HomeScreen = (props) => {
 
 const styles = StyleSheet.create({
   titleText: {
-    fontFamily: "roboto-bold",
+    fontFamily: "roboto-medium",
     fontSize: 15,
     color: Colors.sixthColor,
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   helloText: {
     fontFamily: "roboto-bold",

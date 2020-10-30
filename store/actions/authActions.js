@@ -1,17 +1,54 @@
 export const REGISTER = "REGISTER";
 export const LOGIN = "LOGIN";
-export const INITIALIZE = "INITIALIZE";
 export const COMPLETE_REGISTRATION = "COMPLETE_REGISTRATION";
-export const REINITIALIZE = "REINITIALIZE";
+export const USER_DB_INIT = "USER_DB_INIT";
+export const RECENT_MOVIES_INIT = "RECENT_MOVIES_INIT";
+export const COMING_MOVIES_INIT = "COMING_MOVIES_INIT";
 
-export const reinitialize = (loggedInUser) => {
+// loading data from the logged in user database
+export const userDbInit = (ourUserKey) => {
   return async (dispatch) => {
     const response = await fetch(
-      `https://project-listana.firebaseio.com/lists/${loggedInUser}.json`
+      `https://project-listana.firebaseio.com/lists/${ourUserKey}.json`
     );
     const responseData = await response.json();
+    dispatch({ type: USER_DB_INIT, responseData });
+  };
+};
 
-    dispatch({ type: REINITIALIZE, responseData });
+// loading the recent launched movies
+// for whatever reason TBD this action does not complete what's inside "return" without an argument (loggedinUser)
+// commingMoviesInit too
+// lost half a day with this thing
+// LE turns out you need to have the try catch wrapper
+export const recentMoviesInit = () => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(
+        "https://api.themoviedb.org/3/movie/now_playing?api_key=929232d9b0b2af7e953d17654808d31f&language=en-US&page=1"
+      );
+      const responseJson = await response.json();
+      const responseData = responseJson.results;
+      dispatch({ type: RECENT_MOVIES_INIT, responseData });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+// loading the coming movies
+export const comingMoviesInit = () => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=929232d9b0b2af7e953d17654808d31f&language=en-US&page=1`
+      );
+      const responseJson = await response.json();
+      const responseData = responseJson.results;
+      dispatch({ type: COMING_MOVIES_INIT, responseData });
+    } catch (err) {
+      console.log(err);
+    }
   };
 };
 
@@ -64,7 +101,6 @@ export const register = (newEmail, newPassword) => {
     // }
     //this will transform the response from JSON to an javascript object or array
     const responseData = await response.json();
-    console.log(responseData);
     const newUserId = responseData.localId;
     const newUserEmail = responseData.email;
     //create a new entry for the new member in the database
@@ -112,12 +148,12 @@ export const login = (newEmail, newPassword) => {
     );
     var ourUser = "";
     var ourUserKey = "";
-    var ourUserDatabase = "";
     //this will transform the response from JSON to an javascript object or array
     const responseData = await response.json();
     if (!response.ok) {
       throw new Error("Something went wrong");
     } else {
+      //search for the user in the database
       ourUser = responseData.localId;
       const newResponse = await fetch(
         "https://project-listana.firebaseio.com/lists.json"
@@ -126,10 +162,9 @@ export const login = (newEmail, newPassword) => {
       for (const key in newResponseData) {
         if (ourUser === newResponseData[key].userId) {
           ourUserKey = key;
-          ourUserDatabase = newResponseData[key];
         }
       }
-      dispatch({ type: INITIALIZE, ourUserDatabase });
+
       dispatch({ type: LOGIN, ourUserKey });
     }
   };

@@ -20,6 +20,7 @@ const SearchScreen = (props) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+  
   //something is wrong with this async
   const searchTMDB = async (searchValue) => {
     const query = searchValue;
