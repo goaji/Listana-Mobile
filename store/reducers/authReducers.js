@@ -1,4 +1,3 @@
-import { log } from "react-native-reanimated";
 import {
   LOGIN,
   USER_DB_INIT,
@@ -21,13 +20,11 @@ export default (state = initialState, action) => {
         ourUserDatabase: action.responseData,
       };
     case COMING_MOVIES_INIT:
-      console.log("Coming Movies:", action.responseData);
       return {
         ...state,
         upcomingMovies: action.responseData,
       };
     case RECENT_MOVIES_INIT:
-      console.log("Recently Launchend:", action.responseData);
       return {
         ...state,
         recentlyLaunched: action.responseData,

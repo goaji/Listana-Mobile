@@ -27,7 +27,7 @@ const SearchResults = (props) => {
       <FlatList
         style={styles.searchResults}
         data={theSearchResults}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         // pay atention to this: item with {}, otherwise it does not work
         renderItem={({ item }) => {
           return (

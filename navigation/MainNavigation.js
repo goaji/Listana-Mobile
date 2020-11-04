@@ -1,13 +1,10 @@
 import React from "react";
-import { Text } from "react-native";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../constants/colors";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { LinearGradient } from "expo-linear-gradient";
-
+import { Dimensions } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import AccountScreen from "../screens/AccountScreen";
 import ListDetailsScreen from "../screens/ListDetailsScreen";
@@ -15,6 +12,8 @@ import ListsScreen from "../screens/ListsScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
 import SearchScreen from "../screens/SearchScreen";
 import MyMoviesScreen from "../screens/MyMoviesScreen";
+
+const { width, height } = Dimensions.get("window");
 
 const MainTab = createBottomTabNavigator();
 const List = createStackNavigator();
@@ -28,6 +27,7 @@ const ListStack = (props) => {
     >
       <List.Screen name="MyLists" component={ListsScreen} />
       <List.Screen name="ListDetails" component={ListDetailsScreen} />
+      <List.Screen name="MovieDetails" component={MovieDetailsScreen} />
     </List.Navigator>
   );
 };
@@ -43,7 +43,8 @@ const MainNavigator = (props) => {
           //   activeTintColor: Colors.fourthColor,
           inactiveTintColor: Colors.fifthColor,
           style: {
-            flex: 0.07,
+            //this should be refined for different screen dimensions
+            height: height / 11,
             alignContent: "center",
             padding: 10,
             backgroundColor: Colors.secondColor,

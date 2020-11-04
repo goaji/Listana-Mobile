@@ -19,8 +19,16 @@ const AppStartNavigator = (props) => {
           backBehavior="none"
           screenOptions={{ headerShown: false }}
         >
-          <MyStack.Screen name="SigninScreen" component={SigninScreen} />
-          <MyStack.Screen name="MainScreen" component={MainNavigator} />
+          <MyStack.Screen
+            backBehavior="none"
+            name="SigninScreen"
+            component={SigninScreen}
+          />
+          <MyStack.Screen
+            backBehavior="none"
+            name="MainScreen"
+            component={MainNavigator}
+          />
         </MyStack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

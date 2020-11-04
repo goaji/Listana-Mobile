@@ -5,5 +5,6 @@ export default {
   fourthColor: "#2948C2",
   fifthColor: "#4477AD",
   sixthColor: "#FFF",
+  seventhColor: "yellow",
   transparentColor: "transparent",
 };

@@ -31,7 +31,6 @@ const SigninScreen = (props) => {
   if (loggedInUser != "nouser") {
     dispatch(authActions.userDbInit(loggedInUser));
     dispatch(authActions.comingMoviesInit(loggedInUser));
-    console.log("Initializing");
     dispatch(authActions.recentMoviesInit(loggedInUser));
 
     navigation.navigate("MainScreen");

@@ -11,10 +11,12 @@ import ReduxThunk from "redux-thunk";
 
 import myReducers from "./store/reducers/listsReducer";
 import authReducer from "./store/reducers/authReducers";
+import movieReducer from "./store/reducers/movieReducers";
 
 const rootReducer = combineReducers({
   mainReducer: myReducers,
   authReducer: authReducer,
+  movieReducer: movieReducer,
 });
 
 const myStore = createStore(rootReducer, applyMiddleware(ReduxThunk));

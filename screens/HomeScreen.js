@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Image,
   View,
   StyleSheet,
   Text,
@@ -7,17 +8,23 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
+  FlatList,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import Colors from "../constants/colors";
 import { useSelector, useDispatch } from "react-redux";
 import * as authActions from "../store/actions/authActions";
+import * as movieActions from "../store/actions/movieActions";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput } from "react-native-paper";
-import { FlatList } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = (props) => {
+  const navigation = useNavigation();
+
   const dispatch = useDispatch();
 
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
@@ -30,6 +37,13 @@ const HomeScreen = (props) => {
   const lastName = useSelector(
     (state) => state.authReducer.ourUserDatabase.lastName
   );
+  const recentlyLaunchedMovies = useSelector(
+    (state) => state.authReducer.recentlyLaunched
+  );
+  const upcomingMovies = useSelector(
+    (state) => state.authReducer.upcomingMovies
+  );
+
   const [firstNameValue, setFirstNameValue] = useState("");
   const [lastNamedValue, setLastNameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
@@ -65,16 +79,76 @@ const HomeScreen = (props) => {
           {/* recently launched section */}
           <View style={styles.container2}>
             <Text style={styles.titleText}>Recently launched</Text>
-            {/* https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en-US&page=1 */}
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              style={styles.homePageList}
+              data={recentlyLaunchedMovies}
+              keyExtractor={(item) => item.id.toString()}
+              // pay atention to this: item with {}, otherwise it does not work
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      dispatch(movieActions.resetMovieCast());
+                      dispatch(movieActions.movieCast(item.id));
+                      navigation.navigate("MyLists", {
+                        screen: "MovieDetails",
+                        params: {
+                          movieDetails: item,
+                        },
+                      });
+                    }}
+                    style={styles.movieContainer}
+                  >
+                    <Image
+                      style={styles.posterImage}
+                      source={{
+                        uri: `http://image.tmdb.org/t/p/original/${item.poster_path}`,
+                      }}
+                    />
+                  </TouchableOpacity>
+                );
+              }}
+            />
           </View>
 
           {/* upcoming movies section */}
           <View style={styles.container3}>
             <Text style={styles.titleText}>Upcoming movies</Text>
-            <FlatList horizontal={true} />
-            {/* https://api.themoviedb.org/3/movie/upcoming?api_key=<<api_key>>&language=en-US&page=1 */}
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              style={styles.homePageList}
+              data={upcomingMovies}
+              keyExtractor={(item) => item.id.toString()}
+              // pay atention to this: item with {}, otherwise it does not work
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      dispatch(movieActions.resetMovieCast());
+                      dispatch(movieActions.movieCast(item.id));
+                      navigation.navigate("MyLists", {
+                        screen: "MovieDetails",
+                        params: {
+                          movieDetails: item,
+                        },
+                      });
+                    }}
+                    style={styles.movieContainer}
+                  >
+                    <Image
+                      style={styles.posterImage}
+                      source={{
+                        uri: `http://image.tmdb.org/t/p/w342/${item.poster_path}`,
+                      }}
+                    />
+                  </TouchableOpacity>
+                );
+              }}
+            />
           </View>
-
           {/* last added section */}
           <View style={styles.container4}>
             <Text style={styles.titleText}>Last added</Text>
@@ -135,7 +209,24 @@ const HomeScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
+  homePageList: {
+    // borderWidth: 5,
+    // borderColor: Colors.thirdColor,
+  },
+
+  posterImage: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.sixthColor,
+    flex: 1,
+    // this is one way to do it, if you don't know the width and height
+    aspectRatio: 1 / 1.5,
+
+    resizeMode: "contain",
+    marginRight: 10,
+  },
   titleText: {
+    paddingBottom: 10,
     fontFamily: "roboto-medium",
     fontSize: 15,
     color: Colors.sixthColor,
