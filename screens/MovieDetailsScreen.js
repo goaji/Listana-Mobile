@@ -10,26 +10,64 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import * as movieActions from "../store/actions/movieActions";
 import * as authActions from "../store/actions/authActions";
 
 import Colors from "../constants/colors";
 import Genres from "../constants/movieGenresIds";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MovieGenres from "../components/movieGenres";
 
 const { width, height } = Dimensions.get("window");
 
 const MovieDetailsScreen = ({ route }) => {
   const dispatch = useDispatch();
   const movieCast = useSelector((state) => state.movieReducer.movieCast);
-  console.log("Castul", movieCast);
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
 
-  const isFavoriteHandler = () => {
-    setIsFavorite(!isFavorite);
-    console.log("Favorit", isFavorite);
+  const favoritesList = useSelector(
+    (state) => state.authReducer.ourUserDatabase.myLists
+  );
+
+  var favoriteMovieKey = undefined;
+  if (favoritesList.myMovies.movies == undefined) {
+  } else {
+    const favoritesListMovies = favoritesList.myMovies.movies;
+    console.log("Lista:", favoritesListMovies);
+    favoriteMovieKey = Object.keys(favoritesListMovies).find(
+      (key) => favoritesListMovies[key].itemId === route.params.movieDetails.id
+    );
+    console.log("Este ceva in lista");
+  }
+  const [isFavorite, setIsFavorite] = useState(() =>
+    favoriteMovieKey === undefined ? false : true
+  );
+
+  const isFavoriteHandler = (movieId) => {
+    if (isFavorite) {
+      dispatch(
+        movieActions.handleFavoritesList(
+          favoriteMovieKey,
+          "remove",
+          loggedInUser
+        )
+      );
+      dispatch(authActions.userDbInit(loggedInUser));
+      setIsFavorite(false);
+    } else {
+      dispatch(
+        movieActions.handleFavoritesList(
+          movieId,
+          "add",
+          loggedInUser,
+          route.params.movieDetails.poster_path
+        )
+      );
+      dispatch(authActions.userDbInit(loggedInUser));
+      setIsFavorite(true);
+    }
+    // setIsFavorite(!isFavorite);
   };
   // this function fetches the launching dates and certifications in different states
   // we don't usem them in this version
@@ -69,7 +107,9 @@ const MovieDetailsScreen = ({ route }) => {
             </View>
             <View style={styles.icons}>
               <TouchableOpacity
-                onPress={isFavoriteHandler}
+                onPress={() => {
+                  isFavoriteHandler(route.params.movieDetails.id);
+                }}
                 style={styles.favoriteIconContainer}
               >
                 <MaterialComunityIcons

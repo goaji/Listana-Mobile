@@ -7,7 +7,12 @@ import {
 
 const initialState = {
   loggedInUser: "nouser",
-  ourUserDatabase: "",
+  //this is a tricky one. we need to initialize the database this way
+  //because the redux store is not loaded when it first renders the home screen and we get an error trying to render the Favorite List
+
+  ourUserDatabase: {
+    myLists: { myMovies: { listName: "My Movies", movies: [] } },
+  },
   recentlyLaunched: "",
   upcomingMovies: "",
 };

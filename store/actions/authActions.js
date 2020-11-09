@@ -120,7 +120,12 @@ export const register = (newEmail, newPassword) => {
           email: newUserEmail,
           photo: "",
           age: "",
-          myLists: { myMovies: { listName: "My Movies", movies: "" } },
+          myLists: {
+            myMovies: {
+              listName: "My Movies",
+              movies: [],
+            },
+          },
         }),
       }
     );

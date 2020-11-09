@@ -16,8 +16,35 @@ import MyMoviesScreen from "../screens/MyMoviesScreen";
 const { width, height } = Dimensions.get("window");
 
 const MainTab = createBottomTabNavigator();
+const Home = createStackNavigator();
+const Favorites = createStackNavigator();
 const List = createStackNavigator();
+const Search = createStackNavigator();
 
+const HomeStack = (props) => {
+  return (
+    <Home.Navigator
+      initialRouteName="Home"
+      backBehavior="none"
+      headerMode="false"
+    >
+      <Home.Screen name="Home" component={HomeScreen} />
+      <Home.Screen name="MovieDetails" component={MovieDetailsScreen} />
+    </Home.Navigator>
+  );
+};
+const FavoritesStack = (props) => {
+  return (
+    <Favorites.Navigator
+      initialRouteName="MyMovies"
+      backBehavior="none"
+      headerMode="false"
+    >
+      <Favorites.Screen name="MyMovies" component={MyMoviesScreen} />
+      <Favorites.Screen name="MovieDetails" component={MovieDetailsScreen} />
+    </Favorites.Navigator>
+  );
+};
 const ListStack = (props) => {
   return (
     <List.Navigator
@@ -29,6 +56,18 @@ const ListStack = (props) => {
       <List.Screen name="ListDetails" component={ListDetailsScreen} />
       <List.Screen name="MovieDetails" component={MovieDetailsScreen} />
     </List.Navigator>
+  );
+};
+const SearchStack = (props) => {
+  return (
+    <Search.Navigator
+      initialRouteName="Search"
+      backBehavior="none"
+      headerMode="false"
+    >
+      <Search.Screen name="Search" component={SearchScreen} />
+      <Search.Screen name="MovieDetails" component={MovieDetailsScreen} />
+    </Search.Navigator>
   );
 };
 
@@ -58,7 +97,7 @@ const MainNavigator = (props) => {
       >
         <MainTab.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeStack}
           options={{
             tabBarLabel: "Home",
             tabBarIcon: ({ focused, color, size }) => (
@@ -72,7 +111,7 @@ const MainNavigator = (props) => {
         />
         <MainTab.Screen
           name="MyMovies"
-          component={MyMoviesScreen}
+          component={FavoritesStack}
           options={{
             tabBarLabel: "My Movies",
             tabBarIcon: ({ focused, color, size }) => (
@@ -100,7 +139,7 @@ const MainNavigator = (props) => {
         />
         <MainTab.Screen
           name="Search"
-          component={SearchScreen}
+          component={SearchStack}
           options={{
             tabBarLabel: "Search",
             tabBarIcon: ({ focused, color, size }) => (

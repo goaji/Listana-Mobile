@@ -44,6 +44,17 @@ const HomeScreen = (props) => {
     (state) => state.authReducer.upcomingMovies
   );
 
+  // convert the object to an array for the flatlist
+  const favoritesList = useSelector((state) =>
+    state.authReducer.ourUserDatabase.myLists.myMovies.movies == undefined
+      ? []
+      : Object.values(state.authReducer.ourUserDatabase.myLists.myMovies.movies)
+  );
+  console.log(favoritesList);
+
+  const emptyFavoriteList = favoritesList.length == 0 ? true : false;
+  console.log(favoritesList.length);
+
   const [firstNameValue, setFirstNameValue] = useState("");
   const [lastNamedValue, setLastNameValue] = useState("");
   const [ageValue, setAgeValue] = useState("");
@@ -92,11 +103,8 @@ const HomeScreen = (props) => {
                     onPress={() => {
                       dispatch(movieActions.resetMovieCast());
                       dispatch(movieActions.movieCast(item.id));
-                      navigation.navigate("MyLists", {
-                        screen: "MovieDetails",
-                        params: {
-                          movieDetails: item,
-                        },
+                      navigation.navigate("MovieDetails", {
+                        movieDetails: item,
                       });
                     }}
                     style={styles.movieContainer}
@@ -129,11 +137,8 @@ const HomeScreen = (props) => {
                     onPress={() => {
                       dispatch(movieActions.resetMovieCast());
                       dispatch(movieActions.movieCast(item.id));
-                      navigation.navigate("MyLists", {
-                        screen: "MovieDetails",
-                        params: {
-                          movieDetails: item,
-                        },
+                      navigation.navigate("MovieDetails", {
+                        movieDetails: item,
                       });
                     }}
                     style={styles.movieContainer}
@@ -151,7 +156,39 @@ const HomeScreen = (props) => {
           </View>
           {/* last added section */}
           <View style={styles.container4}>
-            <Text style={styles.titleText}>Last added</Text>
+            <Text style={styles.titleText}>Last Added to Favorites</Text>
+            {emptyFavoriteList && <Text>Test</Text>}
+            {!emptyFavoriteList && (
+              <FlatList
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={styles.homePageList}
+                data={favoritesList}
+                keyExtractor={(item) => item.itemId.toString()}
+                // pay atention to this: item with {}, otherwise it does not work
+                renderItem={({ item }) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        dispatch(movieActions.resetMovieCast());
+                        dispatch(movieActions.movieCast(item.itemId));
+                        navigation.navigate("MovieDetails", {
+                          movieDetails: item,
+                        });
+                      }}
+                      style={styles.movieContainer}
+                    >
+                      <Image
+                        style={styles.posterImage}
+                        source={{
+                          uri: `http://image.tmdb.org/t/p/w342/${item.posterPath}`,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            )}
           </View>
 
           {/* this space will be empty, under the bottom menu */}

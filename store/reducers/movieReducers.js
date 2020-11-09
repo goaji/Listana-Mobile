@@ -1,4 +1,9 @@
-import { MOVIE_CAST, RESET_MOVIE_CAST } from "../actions/movieActions";
+import {
+  MOVIE_CAST,
+  RESET_MOVIE_CAST,
+  HANDLE_FAVORITE_LIST_ADD,
+  HANDLE_FAVORITE_LIST_DELETE,
+} from "../actions/movieActions";
 
 const initialState = {
   movieCast: [],
@@ -6,6 +11,10 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case HANDLE_FAVORITE_LIST_ADD:
+      return state;
+    case HANDLE_FAVORITE_LIST_DELETE:
+      return state;
     case MOVIE_CAST:
       return {
         ...state,
