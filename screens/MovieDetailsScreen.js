@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -21,6 +21,7 @@ import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIc
 const { width, height } = Dimensions.get("window");
 
 const MovieDetailsScreen = ({ route }) => {
+  console.log(route.params);
   const dispatch = useDispatch();
   const movieCast = useSelector((state) => state.movieReducer.movieCast);
 
@@ -30,19 +31,49 @@ const MovieDetailsScreen = ({ route }) => {
     (state) => state.authReducer.ourUserDatabase.myLists
   );
 
+  const navigationSource = route.params.source;
+
+  const movieKey =
+    route.params.source == "fav"
+      ? route.params.movieDetails.itemId
+      : route.params.movieDetails.id;
+
+  const backdropPath = useSelector(
+    (state) => state.movieReducer.movieDetails.backdrop_path
+  );
+  const voteAverage = useSelector(
+    (state) => state.movieReducer.movieDetails.vote_average
+  );
+  const genresIds = useSelector(
+    (state) => state.movieReducer.movieDetails.genres
+  );
+  const overview = useSelector(
+    (state) => state.movieReducer.movieDetails.overview
+  );
+  const movieTitle = useSelector(
+    (state) => state.movieReducer.movieDetails.original_title
+  );
+  const releaseDate = useSelector(
+    (state) => state.movieReducer.movieDetails.release_date
+  );
+
   var favoriteMovieKey = undefined;
   if (favoritesList.myMovies.movies == undefined) {
   } else {
     const favoritesListMovies = favoritesList.myMovies.movies;
-    console.log("Lista:", favoritesListMovies);
     favoriteMovieKey = Object.keys(favoritesListMovies).find(
-      (key) => favoritesListMovies[key].itemId === route.params.movieDetails.id
+      (key) => favoritesListMovies[key].itemId === movieKey
     );
-    console.log("Este ceva in lista");
   }
   const [isFavorite, setIsFavorite] = useState(() =>
     favoriteMovieKey === undefined ? false : true
   );
+
+  const [isAddListMode, setIsAddListMode] = useState(false);
+
+  useEffect(() => {
+    dispatch(authActions.userDbInit(loggedInUser));
+  }, [isFavorite]);
 
   const isFavoriteHandler = (movieId) => {
     if (isFavorite) {
@@ -53,7 +84,6 @@ const MovieDetailsScreen = ({ route }) => {
           loggedInUser
         )
       );
-      dispatch(authActions.userDbInit(loggedInUser));
       setIsFavorite(false);
     } else {
       dispatch(
@@ -64,7 +94,6 @@ const MovieDetailsScreen = ({ route }) => {
           route.params.movieDetails.poster_path
         )
       );
-      dispatch(authActions.userDbInit(loggedInUser));
       setIsFavorite(true);
     }
     // setIsFavorite(!isFavorite);
@@ -88,49 +117,102 @@ const MovieDetailsScreen = ({ route }) => {
         <Image
           style={styles.posterImage}
           source={{
-            uri: `http://image.tmdb.org/t/p/w1280/${route.params.movieDetails.backdrop_path}`,
+            uri:
+              route.params.source == "fav"
+                ? `http://image.tmdb.org/t/p/w1280/${backdropPath}`
+                : `http://image.tmdb.org/t/p/w1280/${route.params.movieDetails.backdrop_path}`,
           }}
         />
       </View>
       <View style={styles.textContainer}>
         <View style={styles.buttonsContainer}>
-          <View style={styles.buttonsContainer2}>
-            <View style={styles.icons}>
-              <MaterialComunityIcons
-                size={25}
-                name="star"
-                color={Colors.seventhColor}
-              />
-              <Text style={styles.iconText}>
-                {route.params.movieDetails.vote_average}/10
-              </Text>
-            </View>
-            <View style={styles.icons}>
-              <TouchableOpacity
-                onPress={() => {
-                  isFavoriteHandler(route.params.movieDetails.id);
-                }}
-                style={styles.favoriteIconContainer}
-              >
+          {!isAddListMode && (
+            <View style={styles.buttonsContainer2}>
+              <View style={styles.icons}>
                 <MaterialComunityIcons
                   size={25}
-                  color={"red"}
-                  name={isFavorite ? "heart" : "heart-outline"}
+                  name="star"
+                  color={Colors.seventhColor}
                 />
-                <Text style={styles.iconText}>
-                  {isFavorite ? "Unfavorite" : "Favorite"}
-                </Text>
+                <Text style={styles.iconText}>{voteAverage}/10</Text>
+              </View>
+              <View style={styles.icons}>
+                <TouchableOpacity
+                  onPress={() => {
+                    isFavoriteHandler(movieKey);
+                  }}
+                  style={styles.favoriteIconContainer}
+                >
+                  <MaterialComunityIcons
+                    size={25}
+                    color={"red"}
+                    name={isFavorite ? "heart" : "heart-outline"}
+                  />
+                  <Text style={styles.iconText}>
+                    {isFavorite ? "Unfavorite" : "Favorite"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.icons}>
+                <TouchableOpacity
+                  style={{ alignItems: "center" }}
+                  onPress={() => setIsAddListMode(true)}
+                >
+                  <MaterialComunityIcons
+                    size={25}
+                    name="plus-circle-outline"
+                    color={Colors.sixthColor}
+                  />
+                  <Text style={styles.iconText}>Add to</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {isAddListMode && (
+            <View style={styles.addListContainer}>
+              <View style={styles.icons}>
+                <TouchableOpacity
+                  style={{ alignItems: "center" }}
+                  onPress={() => setIsAddListMode(false)}
+                >
+                  {/* <MaterialComunityIcons
+                    size={25}
+                    name="plus-circle-outline"
+                    color={Colors.sixthColor}
+                  /> */}
+                  <Text style={styles.iconText}>Add to</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  style={styles.addListHalfContainer}
+                  onPress={() => setIsAddListMode(false)}
+                >
+                  <MaterialComunityIcons
+                    style={{ alignSelf: "center" }}
+                    size={25}
+                    name="clipboard-text-outline"
+                    color={Colors.sixthColor}
+                  />
+                  <Text style={styles.iconText}>existing list</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.addListHalfContainer}
+                onPress={() => setIsAddListMode(false)}
+              >
+                <MaterialComunityIcons
+                  style={{ alignSelf: "center" }}
+                  size={25}
+                  name="clipboard-outline"
+                  color={Colors.sixthColor}
+                />
+                <View>
+                  <Text style={styles.iconText}>new list</Text>
+                </View>
               </TouchableOpacity>
             </View>
-            <View style={styles.icons}>
-              <MaterialComunityIcons
-                size={25}
-                name="plus-circle-outline"
-                color={Colors.sixthColor}
-              />
-              <Text style={styles.iconText}>Add</Text>
-            </View>
-          </View>
+          )}
         </View>
         <View style={styles.titleContainer}>
           <View style={styles.movieTitle}>
@@ -141,7 +223,9 @@ const MovieDetailsScreen = ({ route }) => {
                 fontWeight: "700",
               }}
             >
-              {route.params.movieDetails.original_title}
+              {route.params.source == "fav"
+                ? movieTitle
+                : route.params.movieDetails.original_title}
             </Text>
           </View>
           <View style={styles.movieGenres}>
@@ -151,13 +235,25 @@ const MovieDetailsScreen = ({ route }) => {
               showsHorizontalScrollIndicator={false}
               horizontal={true}
               style={styles.genreList}
-              data={route.params.movieDetails.genre_ids}
-              keyExtractor={(item) => item.toString()}
+              data={
+                route.params.source == "fav"
+                  ? genresIds
+                  : route.params.movieDetails.genre_ids
+              }
+              keyExtractor={
+                route.params.source == "fav"
+                  ? (item) => item.id.toString()
+                  : (item) => item.toString()
+              }
               // pay atention to this: item with {}, otherwise it does not work
               renderItem={({ item }) => {
                 return (
                   <View style={styles.movieGenreContainer}>
-                    <Text style={styles.movieGenreText}>{Genres[item]}</Text>
+                    <Text style={styles.movieGenreText}>
+                      {route.params.source == "fav"
+                        ? Genres[item.id]
+                        : Genres[item]}
+                    </Text>
                   </View>
                 );
               }}
@@ -165,7 +261,9 @@ const MovieDetailsScreen = ({ route }) => {
           </View>
           <View style={styles.movieStats}>
             <Text style={styles.movieStatsText}>
-              {parseInt(route.params.movieDetails.release_date)}
+              {route.params.source == "fav"
+                ? parseInt(releaseDate)
+                : parseInt(route.params.movieDetails.release_date)}
             </Text>
             <Text style={styles.movieStatsText}></Text>
             <Text style={styles.movieStatsText}></Text>
@@ -180,7 +278,9 @@ const MovieDetailsScreen = ({ route }) => {
           >
             <View style={styles.overviewContainer}>
               <Text style={styles.overviewText}>
-                {route.params.movieDetails.overview}
+                {route.params.source == "fav"
+                  ? overview
+                  : route.params.movieDetails.overview}
               </Text>
             </View>
           </ScrollView>
@@ -317,9 +417,27 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginBottom: 30,
     marginRight: -5,
-
+    borderTopLeftRadius: 25,
+    paddingRight: 5,
+    borderBottomLeftRadius: 25,
+  },
+  addListContainer: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    height: 60,
+    width: width * 0.6,
+    color: "red",
+    backgroundColor: Colors.fifthColor,
+    marginTop: -30,
+    marginBottom: 30,
+    marginRight: -5,
+    paddingRight: 5,
     borderTopLeftRadius: 25,
     borderBottomLeftRadius: 25,
+  },
+  addListHalfContainer: {
+    justifyContent: "center",
+    flex: 1,
   },
   textContainer: { flex: 1 },
   titleContainer: {

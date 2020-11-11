@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   View,
@@ -50,10 +50,8 @@ const HomeScreen = (props) => {
       ? []
       : Object.values(state.authReducer.ourUserDatabase.myLists.myMovies.movies)
   );
-  console.log(favoritesList);
 
   const emptyFavoriteList = favoritesList.length == 0 ? true : false;
-  console.log(favoritesList.length);
 
   const [firstNameValue, setFirstNameValue] = useState("");
   const [lastNamedValue, setLastNameValue] = useState("");
@@ -70,7 +68,6 @@ const HomeScreen = (props) => {
     );
     dispatch(authActions.userDbInit(loggedInUser));
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -105,6 +102,7 @@ const HomeScreen = (props) => {
                       dispatch(movieActions.movieCast(item.id));
                       navigation.navigate("MovieDetails", {
                         movieDetails: item,
+                        source: "recent",
                       });
                     }}
                     style={styles.movieContainer}
@@ -139,6 +137,7 @@ const HomeScreen = (props) => {
                       dispatch(movieActions.movieCast(item.id));
                       navigation.navigate("MovieDetails", {
                         movieDetails: item,
+                        source: "upcoming",
                       });
                     }}
                     style={styles.movieContainer}
@@ -157,7 +156,17 @@ const HomeScreen = (props) => {
           {/* last added section */}
           <View style={styles.container4}>
             <Text style={styles.titleText}>Last Added to Favorites</Text>
-            {emptyFavoriteList && <Text>Test</Text>}
+            {emptyFavoriteList && (
+              <Text
+                style={{
+                  color: Colors.sixthColor,
+                  fontSize: 13,
+                  fontStyle: "italic",
+                }}
+              >
+                You don't have any favorite movies yet.
+              </Text>
+            )}
             {!emptyFavoriteList && (
               <FlatList
                 showsHorizontalScrollIndicator={false}
@@ -169,11 +178,15 @@ const HomeScreen = (props) => {
                 renderItem={({ item }) => {
                   return (
                     <TouchableOpacity
-                      onPress={() => {
-                        dispatch(movieActions.resetMovieCast());
-                        dispatch(movieActions.movieCast(item.itemId));
+                      onPress={async () => {
+                        await dispatch(movieActions.resetMovieCast());
+                        await dispatch(movieActions.movieCast(item.itemId));
+                        await dispatch(
+                          movieActions.getMovieDetails(item.itemId)
+                        );
                         navigation.navigate("MovieDetails", {
                           movieDetails: item,
+                          source: "fav",
                         });
                       }}
                       style={styles.movieContainer}
@@ -194,6 +207,7 @@ const HomeScreen = (props) => {
           {/* this space will be empty, under the bottom menu */}
           <View style={styles.underMenu}></View>
         </View>
+
         <Modal visible={isFirstTime} transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalPopup}>
