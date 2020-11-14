@@ -126,6 +126,7 @@ export const register = (newEmail, newPassword) => {
               movies: [],
             },
           },
+          customLists: "",
         }),
       }
     );

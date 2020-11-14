@@ -8,6 +8,8 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  Modal,
+  TextInput,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as movieActions from "../store/actions/movieActions";
@@ -17,27 +19,47 @@ import Colors from "../constants/colors";
 import Genres from "../constants/movieGenresIds";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import colors from "../constants/colors";
 
 const { width, height } = Dimensions.get("window");
 
 const MovieDetailsScreen = ({ route }) => {
-  console.log(route.params);
   const dispatch = useDispatch();
   const movieCast = useSelector((state) => state.movieReducer.movieCast);
 
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
 
+  const [isAddListMode, setIsAddListMode] = useState(false);
+  const [showAddListForm, setShowAddListForm] = useState(false);
+  const [createNewList, setCreateNewList] = useState(true);
+  const [listName, setListName] = useState("");
+  const [selectedList, setSelectedList] = useState("");
+
   const favoritesList = useSelector(
     (state) => state.authReducer.ourUserDatabase.myLists
   );
 
-  const navigationSource = route.params.source;
+  const theCustomLists = useSelector((state) =>
+    state.authReducer.ourUserDatabase.customLists == undefined
+      ? {}
+      : state.authReducer.ourUserDatabase.customLists
+  );
+
+  const customLists = [];
+  Object.keys(theCustomLists).forEach((key) =>
+    customLists.push({ id: key, data: theCustomLists[key] })
+  );
+  console.log(customLists);
+  // const navigationSource = route.params.source;
 
   const movieKey =
     route.params.source == "fav"
       ? route.params.movieDetails.itemId
       : route.params.movieDetails.id;
 
+  const posterPath = useSelector(
+    (state) => state.movieReducer.movieDetails.poster_path
+  );
   const backdropPath = useSelector(
     (state) => state.movieReducer.movieDetails.backdrop_path
   );
@@ -69,11 +91,9 @@ const MovieDetailsScreen = ({ route }) => {
     favoriteMovieKey === undefined ? false : true
   );
 
-  const [isAddListMode, setIsAddListMode] = useState(false);
-
   useEffect(() => {
     dispatch(authActions.userDbInit(loggedInUser));
-  }, [isFavorite]);
+  }, [isFavorite, dispatch]);
 
   const isFavoriteHandler = (movieId) => {
     if (isFavorite) {
@@ -91,25 +111,16 @@ const MovieDetailsScreen = ({ route }) => {
           movieId,
           "add",
           loggedInUser,
-          route.params.movieDetails.poster_path
+          // this logic covers the particular case when user comes from the favorites list,
+          // unfavs a movie and then favs it again, otherwise it won't write the poster path
+          route.params.source == "fav"
+            ? posterPath
+            : route.params.movieDetails.poster_path
         )
       );
       setIsFavorite(true);
     }
-    // setIsFavorite(!isFavorite);
   };
-  // this function fetches the launching dates and certifications in different states
-  // we don't usem them in this version
-  // async function getMovieDetails() {
-  //   try {
-  //     const response1 = await fetch(
-  //       `https://api.themoviedb.org/3/movie/${route.params.movieDetails.id}/release_dates?api_key=929232d9b0b2af7e953d17654808d31f`
-  //     );
-  //     const responseJson1 = await response1.json();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,7 +145,12 @@ const MovieDetailsScreen = ({ route }) => {
                   name="star"
                   color={Colors.seventhColor}
                 />
-                <Text style={styles.iconText}>{voteAverage}/10</Text>
+                <Text style={styles.iconText}>
+                  {route.params.source == "fav"
+                    ? voteAverage
+                    : route.params.movieDetails.vote_average}
+                  /10
+                </Text>
               </View>
               <View style={styles.icons}>
                 <TouchableOpacity
@@ -186,7 +202,10 @@ const MovieDetailsScreen = ({ route }) => {
               <View>
                 <TouchableOpacity
                   style={styles.addListHalfContainer}
-                  onPress={() => setIsAddListMode(false)}
+                  onPress={() => {
+                    setCreateNewList(false);
+                    setShowAddListForm(true);
+                  }}
                 >
                   <MaterialComunityIcons
                     style={{ alignSelf: "center" }}
@@ -199,7 +218,10 @@ const MovieDetailsScreen = ({ route }) => {
               </View>
               <TouchableOpacity
                 style={styles.addListHalfContainer}
-                onPress={() => setIsAddListMode(false)}
+                onPress={() => {
+                  setCreateNewList(true);
+                  setShowAddListForm(true);
+                }}
               >
                 <MaterialComunityIcons
                   style={{ alignSelf: "center" }}
@@ -323,11 +345,267 @@ const MovieDetailsScreen = ({ route }) => {
         </View>
         <View style={styles.bottomContainer}></View>
       </View>
+
+      {/* this is the popup for adding the movie to a list */}
+      <Modal visible={showAddListForm} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalPopup}>
+            {createNewList && (
+              <View style={{ alignItems: "center" }}>
+                <View>
+                  <Text style={styles.addListTitleText}>
+                    Name of the new list:
+                  </Text>
+                  <TextInput
+                    autoCapitalize="none"
+                    value={listName}
+                    onChangeText={(value) => setListName(value)}
+                    style={styles.textInput}
+                  />
+                </View>
+                <View>
+                  <View style={styles.addListButtonsContainer}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={async () => {
+                        await dispatch(
+                          movieActions.createNewList(
+                            loggedInUser,
+                            listName,
+                            movieKey,
+                            route.params.source == "fav"
+                              ? posterPath
+                              : route.params.movieDetails.poster_path
+                          )
+                        );
+                        await dispatch(authActions.userDbInit(loggedInUser));
+                        setListName("");
+                        setIsAddListMode(false);
+                        setShowAddListForm(false);
+                      }}
+                    >
+                      <Text style={styles.textButton}>Create&Add</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        setListName("");
+                        setIsAddListMode(false);
+                        setShowAddListForm(false);
+                      }}
+                    >
+                      <Text style={styles.textButton}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setListName("");
+                      setCreateNewList(false);
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 15,
+                        color: Colors.sixthColor,
+                      }}
+                    >
+                      Add to an existing list
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {!createNewList && (
+              <View>
+                {customLists == undefined && (
+                  <View>
+                    <Text style={styles.addListTitleText}>
+                      You don't have any custom lists.
+                    </Text>
+                  </View>
+                )}
+                <View style={{ alignItems: "center" }}>
+                  {customLists != undefined && (
+                    <View>
+                      <Text style={styles.addListTitleText}>Your lists:</Text>
+                      <View
+                        style={{
+                          minHeight: height * 0.2,
+                          maxHeight: height * 0.6,
+                          // height:
+                          //   customLists.length > 3
+                          //     ? height * 0.6
+                          //     : height * 0.3,
+                        }}
+                      >
+                        <FlatList
+                          style={styles.myCustomLists}
+                          data={customLists}
+                          keyExtractor={(item) => item.id.toString()}
+                          // pay atention to this: item with {}, otherwise it does not work
+                          renderItem={({ item }) => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  setSelectedList(item.id);
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    justifyContent: "center",
+                                    borderWidth: 2,
+                                    width: width * 0.8,
+                                    height: 50,
+                                    backgroundColor:
+                                      selectedList == item.id
+                                        ? Colors.firstColor
+                                        : Colors.fifthColor,
+                                    marginVertical: 5,
+                                    paddingVertical: 3,
+                                    paddingHorizontal: 5,
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 20,
+                                      fontWeight: "700",
+                                      color: Colors.sixthColor,
+                                    }}
+                                  >
+                                    {item.data.listName}
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontSize: 12,
+                                      color: Colors.sixthColor,
+                                    }}
+                                  >
+                                    Movies already in this list:{" "}
+                                    {Object.values(item.data.movies).length}
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                            );
+                          }}
+                        />
+                      </View>
+                    </View>
+                  )}
+                  <View style={styles.addListButtonsContainer}>
+                    {selectedList != "" && (
+                      <TouchableOpacity
+                        onPress={async () => {
+                          await dispatch(
+                            movieActions.addMovieToList(
+                              loggedInUser,
+                              selectedList,
+                              movieKey,
+                              route.params.source == "fav"
+                                ? posterPath
+                                : route.params.movieDetails.poster_path
+                            )
+                          );
+                          await dispatch(authActions.userDbInit(loggedInUser));
+                          setSelectedList("");
+                          setIsAddListMode(false);
+                          setShowAddListForm(false);
+                        }}
+                        style={styles.button}
+                      >
+                        <Text style={styles.textButton}>Add</Text>
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        setSelectedList("");
+                        setIsAddListMode(false);
+                        setShowAddListForm(false);
+                      }}
+                    >
+                      <Text style={styles.textButton}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View>
+                  <TouchableOpacity onPress={() => setCreateNewList(true)}>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 15,
+                        color: Colors.sixthColor,
+                      }}
+                    >
+                      Create a new list
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  myCustomLists: { flexDirection: "row" },
+  addListTitleText: {
+    marginBottom: 10,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.firstColor,
+  },
+  textButton: {
+    textAlign: "center",
+    color: Colors.sixthColor,
+    fontSize: 17,
+    fontFamily: "roboto-medium",
+  },
+  addListButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: Colors.fourthColor,
+    width: width / 3,
+    height: 50,
+    justifyContent: "center",
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: Colors.thirdColor,
+    marginHorizontal: 10,
+  },
+  textInput: {
+    width: 270,
+    height: 30,
+    backgroundColor: Colors.sixthColor,
+    marginVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  modalPopup: {
+    paddingVertical: 20,
+    width: width * 0.9,
+    borderWidth: 5,
+    borderColor: Colors.firstColor,
+    backgroundColor: Colors.fifthColor,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    // dont' forget to add some shaddow
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(22, 29, 45, 0.85)",
+  },
   favoriteIconContainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -405,9 +683,11 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     height: 50,
-    backgroundColor: "red",
+    // backgroundColor: "red",
   },
   buttonsContainer2: {
+    borderWidth: 2,
+    borderColor: Colors.fifthColor,
     flexDirection: "row",
     alignSelf: "flex-end",
     height: 60,
@@ -469,8 +749,6 @@ const styles = StyleSheet.create({
   bottomContainer: {
     alignSelf: "stretch",
     height: height / 11,
-    borderWidth: 1,
-    borderColor: Colors.thirdColor,
   },
   container: {
     flex: 1,

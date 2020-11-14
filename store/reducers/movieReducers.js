@@ -4,6 +4,7 @@ import {
   HANDLE_FAVORITE_LIST_ADD,
   HANDLE_FAVORITE_LIST_DELETE,
   GET_MOVIE_DETAILS,
+  CREATE_NEW_LIST,
 } from "../actions/movieActions";
 
 const initialState = {
@@ -14,11 +15,14 @@ const initialState = {
     release_date: "",
     vote_average: 0,
     overview: "",
+    poster_path: "",
   },
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CREATE_NEW_LIST:
+      return state;
     case GET_MOVIE_DETAILS:
       return {
         ...state,

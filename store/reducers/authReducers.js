@@ -12,6 +12,7 @@ const initialState = {
 
   ourUserDatabase: {
     myLists: { myMovies: { listName: "My Movies", movies: [] } },
+    customLists: {},
   },
   recentlyLaunched: "",
   upcomingMovies: "",

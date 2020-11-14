@@ -78,10 +78,14 @@ const HomeScreen = (props) => {
         <View style={styles.homeScreenContainer}>
           {/* title section */}
           <View style={styles.container1}>
-            <Text style={styles.helloText}>
-              Hello, {firstName} {lastName}.
-            </Text>
-            <Text style={styles.helloText}>Welcome back!</Text>
+            {!isFirstTime && (
+              <View>
+                <Text style={styles.helloText}>
+                  Hello, {firstName} {lastName}.
+                </Text>
+                <Text style={styles.helloText}>Welcome back!</Text>
+              </View>
+            )}
           </View>
 
           {/* recently launched section */}
@@ -254,7 +258,6 @@ const HomeScreen = (props) => {
           </View>
         </Modal>
       </ImageBackground>
-      <Text>activeUserLists.length</Text>
     </SafeAreaView>
   );
 };
@@ -290,35 +293,27 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
   },
   underMenu: {
-    flex: 0.5,
+    flex: 0.75,
   },
   container1: {
     padding: 10,
     paddingLeft: 20,
     flex: 2,
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "red",
   },
   container2: {
     padding: 10,
     flex: 3,
-    borderWidth: 2,
-    borderColor: "red",
   },
   container3: {
     padding: 10,
 
     flex: 3,
-    borderWidth: 2,
-    borderColor: "red",
   },
   container4: {
     padding: 10,
 
     flex: 3,
-    borderWidth: 2,
-    borderColor: "red",
   },
   homeScreenContainer: {
     flex: 1,
@@ -370,9 +365,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
+
   modalContainer: {
     flex: 1,
     justifyContent: "center",
+    backgroundColor: "rgba(22, 29, 45, 0.85)",
   },
   modalPopup: {
     alignSelf: "center",
