@@ -11,7 +11,7 @@ import ListDetailsScreen from "../screens/ListDetailsScreen";
 import ListsScreen from "../screens/ListsScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
 import SearchScreen from "../screens/SearchScreen";
-import MyMoviesScreen from "../screens/MyMoviesScreen";
+import FavoriteMoviesScreen from "../screens/FavoriteMoviesScreen";
 
 const { width, height } = Dimensions.get("window");
 
@@ -40,7 +40,10 @@ const FavoritesStack = (props) => {
       backBehavior="none"
       headerMode="false"
     >
-      <Favorites.Screen name="MyMovies" component={MyMoviesScreen} />
+      <Favorites.Screen
+        name="FavoriteMovies"
+        component={FavoriteMoviesScreen}
+      />
       <Favorites.Screen name="MovieDetails" component={MovieDetailsScreen} />
     </Favorites.Navigator>
   );
@@ -116,7 +119,7 @@ const MainNavigator = (props) => {
             tabBarLabel: "My Movies",
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialComunityIcons
-                name="video"
+                name="heart"
                 color={focused ? Colors.firstColor : Colors.sixthColor}
                 size={focused ? 40 : 30}
               />

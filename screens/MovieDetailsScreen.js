@@ -39,6 +39,7 @@ const MovieDetailsScreen = ({ route }) => {
     (state) => state.authReducer.ourUserDatabase.myLists
   );
 
+  //we need this sequence to transform this object of objects to an array of objects that includes the key, too
   const theCustomLists = useSelector((state) =>
     state.authReducer.ourUserDatabase.customLists == undefined
       ? {}
@@ -49,7 +50,6 @@ const MovieDetailsScreen = ({ route }) => {
   Object.keys(theCustomLists).forEach((key) =>
     customLists.push({ id: key, data: theCustomLists[key] })
   );
-  console.log(customLists);
   // const navigationSource = route.params.source;
 
   const movieKey =
@@ -95,9 +95,9 @@ const MovieDetailsScreen = ({ route }) => {
     dispatch(authActions.userDbInit(loggedInUser));
   }, [isFavorite, dispatch]);
 
-  const isFavoriteHandler = (movieId) => {
+  async function isFavoriteHandler(movieId) {
     if (isFavorite) {
-      dispatch(
+      await dispatch(
         movieActions.handleFavoritesList(
           favoriteMovieKey,
           "remove",
@@ -106,7 +106,7 @@ const MovieDetailsScreen = ({ route }) => {
       );
       setIsFavorite(false);
     } else {
-      dispatch(
+      await dispatch(
         movieActions.handleFavoritesList(
           movieId,
           "add",
@@ -120,7 +120,7 @@ const MovieDetailsScreen = ({ route }) => {
       );
       setIsFavorite(true);
     }
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>

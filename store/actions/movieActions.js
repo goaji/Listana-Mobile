@@ -93,6 +93,7 @@ export const handleFavoritesList = (
   try {
     return async (dispatch) => {
       if (method === "add") {
+        console.log("add");
         const response = await fetch(
           `https://project-listana.firebaseio.com/lists/${loggedInUser}/myLists/myMovies/movies.json`,
           {
