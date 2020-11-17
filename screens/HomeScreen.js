@@ -21,7 +21,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput } from "react-native-paper";
 
 const { width, height } = Dimensions.get("window");
-
 const HomeScreen = (props) => {
   const navigation = useNavigation();
 
@@ -293,7 +292,7 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
   },
   underMenu: {
-    flex: 0.75,
+    height: height > 700 ? 60 : 50,
   },
   container1: {
     padding: 10,

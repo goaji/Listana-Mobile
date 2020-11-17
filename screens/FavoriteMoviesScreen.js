@@ -45,7 +45,7 @@ const FavoriteMoviesScreen = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        imageStyle={styles.imageBackgroundStyle}
+        imageStyle={{ resizeMode: "stretch" }}
         source={require("../assets/images/background1.png")}
         style={styles.imageBackground}
       >
@@ -219,8 +219,6 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     flex: 9,
-    borderWidth: 1,
-    borderColor: Colors.sixthColor,
   },
   contentContainer: {
     padding: 10,
@@ -228,9 +226,8 @@ const styles = StyleSheet.create({
     flex: 9,
   },
   underMenu: {
-    flex: 0.75,
-    borderWidth: 1,
-    borderColor: Colors.sixthColor,
+    //looks like this doesn't work, check latter why. LE: we don't need it because of the FlatList
+    // height: height > 700 ? 60 : 50,
   },
   imageBackground: {
     flex: 1,

@@ -5,6 +5,23 @@ export const HANDLE_FAVORITE_LIST_DELETE = "HANDLE_FAVORITE_LIST_DELETE";
 export const GET_MOVIE_DETAILS = "GET_MOVIE_DETAILS";
 export const CREATE_NEW_LIST = "CREATE_NEW_LIST";
 export const ADD_MOVIE_TO_LIST = "ADD_MOVie_TO_LIST";
+export const REMOVE_MOVIE_FROM_LIST = "REMOVE_MOVIE_FROM_LIST";
+
+export const removeMovieFromList = (loggedInUser, listId, entryId) => {
+  console.log(loggedInUser, listId, entryId);
+  return async (dispatch) => {
+    try {
+      const response = await fetch(
+        `https://project-listana.firebaseio.com/lists/${loggedInUser}/customLists/${listId}/movies/${entryId}.json`,
+        { method: "DELETE" }
+      );
+      const resData = await response.json();
+      dispatch({ type: REMOVE_MOVIE_FROM_LIST });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
 
 export const addMovieToList = (loggedInUser, listId, movieKey, posterPath) => {
   return async (dispatch) => {

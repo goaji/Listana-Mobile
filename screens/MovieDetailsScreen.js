@@ -52,6 +52,7 @@ const MovieDetailsScreen = ({ route }) => {
   );
   // const navigationSource = route.params.source;
 
+  console.log(customLists);
   const movieKey =
     route.params.source == "fav"
       ? route.params.movieDetails.itemId
@@ -482,7 +483,9 @@ const MovieDetailsScreen = ({ route }) => {
                                     }}
                                   >
                                     Movies already in this list:{" "}
-                                    {Object.values(item.data.movies).length}
+                                    {item.data.movies == undefined
+                                      ? "0"
+                                      : Object.values(item.data.movies).length}
                                   </Text>
                                 </View>
                               </TouchableOpacity>

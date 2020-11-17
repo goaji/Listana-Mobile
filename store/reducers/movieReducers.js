@@ -5,6 +5,7 @@ import {
   HANDLE_FAVORITE_LIST_DELETE,
   GET_MOVIE_DETAILS,
   CREATE_NEW_LIST,
+  REMOVE_MOVIE_FROM_LIST,
 } from "../actions/movieActions";
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case REMOVE_MOVIE_FROM_LIST:
+      return state;
     case CREATE_NEW_LIST:
       return state;
     case GET_MOVIE_DETAILS:

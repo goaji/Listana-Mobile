@@ -86,9 +86,9 @@ const MainNavigator = (props) => {
           inactiveTintColor: Colors.fifthColor,
           style: {
             //this should be refined for different screen dimensions
-            height: height / 11,
+            height: height > 700 ? 60 : 50,
             alignContent: "center",
-            padding: 10,
+            paddingBottom: height > 700 ? 10 : 5,
             backgroundColor: Colors.secondColor,
             position: "absolute",
             borderTopLeftRadius: 25,
