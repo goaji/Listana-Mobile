@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import {
@@ -16,6 +16,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 import * as authActions from "../store/actions/authActions";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const { width, height } = Dimensions.get("window");
 
 const SigninScreen = (props) => {
@@ -26,21 +27,22 @@ const SigninScreen = (props) => {
   const [isRegister, setIsRegister] = useState(false);
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+
   //don't forget to specify state.`whateverreduceryouneed`.variable
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
+
   if (loggedInUser != "nouser") {
     dispatch(authActions.userDbInit(loggedInUser));
     dispatch(authActions.comingMoviesInit(loggedInUser));
     dispatch(authActions.recentMoviesInit(loggedInUser));
-
     navigation.navigate("MainScreen");
   }
+
   const loginHandler = () => {
     if (isLogin) {
       //try to login
       setIsLogin(false);
       dispatch(authActions.login(emailValue, passwordValue));
-
       setEmailValue("");
       setPasswordValue("");
     } else {
@@ -50,9 +52,16 @@ const SigninScreen = (props) => {
   };
   const registerHandler = () => {
     if (isRegister) {
+      const theDate = new Date();
+      const date =
+        theDate.getFullYear() +
+        "/" +
+        theDate.getMonth() +
+        "/" +
+        theDate.getDate();
       //try to register
       setIsRegister(false);
-      dispatch(authActions.register(emailValue, passwordValue));
+      dispatch(authActions.register(emailValue, passwordValue, date));
       setEmailValue("");
       setPasswordValue("");
     } else {

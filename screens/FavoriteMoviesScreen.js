@@ -29,9 +29,9 @@ const FavoriteMoviesScreen = (props) => {
   const [selectedMovie, setSelectedMovie] = useState("");
 
   const theFavoritesList = useSelector((state) =>
-    state.authReducer.ourUserDatabase.myLists.myMovies.movies == undefined
+    state.authReducer.ourUserDatabase.favoriteMovies.movies == undefined
       ? {}
-      : state.authReducer.ourUserDatabase.myLists.myMovies.movies
+      : state.authReducer.ourUserDatabase.favoriteMovies.movies
   );
 
   const favoritesList = [];
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontFamily: "roboto-bold",
-    fontSize: 20,
+    fontSize: 30,
     color: Colors.sixthColor,
     letterSpacing: 1,
   },

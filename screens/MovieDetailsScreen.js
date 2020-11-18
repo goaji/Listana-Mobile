@@ -10,10 +10,12 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as movieActions from "../store/actions/movieActions";
 import * as authActions from "../store/actions/authActions";
+import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../constants/colors";
 import Genres from "../constants/movieGenresIds";
@@ -24,7 +26,10 @@ import colors from "../constants/colors";
 const { width, height } = Dimensions.get("window");
 
 const MovieDetailsScreen = ({ route }) => {
+  console.log(route);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const movieCast = useSelector((state) => state.movieReducer.movieCast);
 
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
@@ -36,7 +41,7 @@ const MovieDetailsScreen = ({ route }) => {
   const [selectedList, setSelectedList] = useState("");
 
   const favoritesList = useSelector(
-    (state) => state.authReducer.ourUserDatabase.myLists
+    (state) => state.authReducer.ourUserDatabase.favoriteMovies
   );
 
   //we need this sequence to transform this object of objects to an array of objects that includes the key, too
@@ -52,9 +57,8 @@ const MovieDetailsScreen = ({ route }) => {
   );
   // const navigationSource = route.params.source;
 
-  console.log(customLists);
   const movieKey =
-    route.params.source == "fav"
+    (route.params.source == "fav") | (route.params.source == "list")
       ? route.params.movieDetails.itemId
       : route.params.movieDetails.id;
 
@@ -81,9 +85,9 @@ const MovieDetailsScreen = ({ route }) => {
   );
 
   var favoriteMovieKey = undefined;
-  if (favoritesList.myMovies.movies == undefined) {
+  if (favoritesList.movies == undefined) {
   } else {
-    const favoritesListMovies = favoritesList.myMovies.movies;
+    const favoritesListMovies = favoritesList.movies;
     favoriteMovieKey = Object.keys(favoritesListMovies).find(
       (key) => favoritesListMovies[key].itemId === movieKey
     );
@@ -114,7 +118,7 @@ const MovieDetailsScreen = ({ route }) => {
           loggedInUser,
           // this logic covers the particular case when user comes from the favorites list,
           // unfavs a movie and then favs it again, otherwise it won't write the poster path
-          route.params.source == "fav"
+          (route.params.source == "fav") | (route.params.source == "list")
             ? posterPath
             : route.params.movieDetails.poster_path
         )
@@ -126,15 +130,34 @@ const MovieDetailsScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.posterContainer}>
-        <Image
-          style={styles.posterImage}
+        <ImageBackground
           source={{
             uri:
-              route.params.source == "fav"
+              (route.params.source == "fav") | (route.params.source == "list")
                 ? `http://image.tmdb.org/t/p/w1280/${backdropPath}`
                 : `http://image.tmdb.org/t/p/w1280/${route.params.movieDetails.backdrop_path}`,
           }}
-        />
+          style={styles.posterImage}
+        >
+          <View style={{ paddingTop: 20, paddingLeft: 10 }}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <MaterialComunityIcons
+                name="arrow-left-circle"
+                color={Colors.fifthColor}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* <Image
+          style={styles.posterImage}
+          source={{
+            uri:
+              (route.params.source == "fav") | (route.params.source == "list")
+                ? `http://image.tmdb.org/t/p/w1280/${backdropPath}`
+                : `http://image.tmdb.org/t/p/w1280/${route.params.movieDetails.backdrop_path}`,
+          }}
+          /> */}
+        </ImageBackground>
       </View>
       <View style={styles.textContainer}>
         <View style={styles.buttonsContainer}>
@@ -147,7 +170,8 @@ const MovieDetailsScreen = ({ route }) => {
                   color={Colors.seventhColor}
                 />
                 <Text style={styles.iconText}>
-                  {route.params.source == "fav"
+                  {(route.params.source == "fav") |
+                  (route.params.source == "list")
                     ? voteAverage
                     : route.params.movieDetails.vote_average}
                   /10
@@ -246,7 +270,7 @@ const MovieDetailsScreen = ({ route }) => {
                 fontWeight: "700",
               }}
             >
-              {route.params.source == "fav"
+              {(route.params.source == "fav") | (route.params.source == "list")
                 ? movieTitle
                 : route.params.movieDetails.original_title}
             </Text>
@@ -259,12 +283,12 @@ const MovieDetailsScreen = ({ route }) => {
               horizontal={true}
               style={styles.genreList}
               data={
-                route.params.source == "fav"
+                (route.params.source == "fav") | (route.params.source == "list")
                   ? genresIds
                   : route.params.movieDetails.genre_ids
               }
               keyExtractor={
-                route.params.source == "fav"
+                (route.params.source == "fav") | (route.params.source == "list")
                   ? (item) => item.id.toString()
                   : (item) => item.toString()
               }
@@ -273,7 +297,8 @@ const MovieDetailsScreen = ({ route }) => {
                 return (
                   <View style={styles.movieGenreContainer}>
                     <Text style={styles.movieGenreText}>
-                      {route.params.source == "fav"
+                      {(route.params.source == "fav") |
+                      (route.params.source == "list")
                         ? Genres[item.id]
                         : Genres[item]}
                     </Text>
@@ -284,7 +309,7 @@ const MovieDetailsScreen = ({ route }) => {
           </View>
           <View style={styles.movieStats}>
             <Text style={styles.movieStatsText}>
-              {route.params.source == "fav"
+              {route.params.source | (route.params.source == "list")
                 ? parseInt(releaseDate)
                 : parseInt(route.params.movieDetails.release_date)}
             </Text>
@@ -301,7 +326,8 @@ const MovieDetailsScreen = ({ route }) => {
           >
             <View style={styles.overviewContainer}>
               <Text style={styles.overviewText}>
-                {route.params.source == "fav"
+                {(route.params.source == "fav") |
+                (route.params.source == "list")
                   ? overview
                   : route.params.movieDetails.overview}
               </Text>
@@ -374,7 +400,8 @@ const MovieDetailsScreen = ({ route }) => {
                             loggedInUser,
                             listName,
                             movieKey,
-                            route.params.source == "fav"
+                            (route.params.source == "fav") |
+                              (route.params.source == "list")
                               ? posterPath
                               : route.params.movieDetails.poster_path
                           )
@@ -504,7 +531,8 @@ const MovieDetailsScreen = ({ route }) => {
                               loggedInUser,
                               selectedList,
                               movieKey,
-                              route.params.source == "fav"
+                              (route.params.source == "fav") |
+                                (route.params.source == "list")
                                 ? posterPath
                                 : route.params.movieDetails.poster_path
                             )

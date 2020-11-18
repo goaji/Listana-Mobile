@@ -78,7 +78,7 @@ export const completeRegistration = (
   };
 };
 
-export const register = (newEmail, newPassword) => {
+export const register = (newEmail, newPassword, date) => {
   //dispatch is an argument
   return async (dispatch) => {
     //wait for the response
@@ -119,12 +119,11 @@ export const register = (newEmail, newPassword) => {
           firstTimeLogin: true,
           email: newUserEmail,
           photo: "",
+          dateCreated: date,
           age: "",
-          myLists: {
-            myMovies: {
-              listName: "My Movies",
-              movies: [],
-            },
+          favoriteMovies: {
+            listName: "My Movies",
+            movies: [],
           },
           customLists: "",
         }),

@@ -12,6 +12,7 @@ import ListsScreen from "../screens/ListsScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
 import SearchScreen from "../screens/SearchScreen";
 import FavoriteMoviesScreen from "../screens/FavoriteMoviesScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -75,6 +76,8 @@ const SearchStack = (props) => {
 };
 
 const MainNavigator = (props) => {
+  const navigation = useNavigation();
+
   return (
     <NavigationContainer independent={true}>
       <MainTab.Navigator

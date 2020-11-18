@@ -45,9 +45,9 @@ const HomeScreen = (props) => {
 
   // convert the object to an array for the flatlist
   const favoritesList = useSelector((state) =>
-    state.authReducer.ourUserDatabase.myLists.myMovies.movies == undefined
+    state.authReducer.ourUserDatabase.favoriteMovies.movies == undefined
       ? []
-      : Object.values(state.authReducer.ourUserDatabase.myLists.myMovies.movies)
+      : Object.values(state.authReducer.ourUserDatabase.favoriteMovies.movies)
   );
 
   const emptyFavoriteList = favoritesList.length == 0 ? true : false;
@@ -287,9 +287,9 @@ const styles = StyleSheet.create({
   },
   helloText: {
     fontFamily: "roboto-bold",
-    fontSize: 20,
+    fontSize: 30,
     color: Colors.sixthColor,
-    letterSpacing: 3,
+    letterSpacing: 1,
   },
   underMenu: {
     height: height > 700 ? 60 : 50,

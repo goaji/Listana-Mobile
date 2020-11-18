@@ -6,6 +6,7 @@ import {
   GET_MOVIE_DETAILS,
   CREATE_NEW_LIST,
   REMOVE_MOVIE_FROM_LIST,
+  SEARCH_MOVIE,
 } from "../actions/movieActions";
 
 const initialState = {
@@ -18,10 +19,16 @@ const initialState = {
     overview: "",
     poster_path: "",
   },
+  searchResults: {},
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case SEARCH_MOVIE:
+      return {
+        ...state,
+        searchResults: action.resData,
+      };
     case REMOVE_MOVIE_FROM_LIST:
       return state;
     case CREATE_NEW_LIST:

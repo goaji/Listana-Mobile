@@ -11,7 +11,7 @@ const initialState = {
   //because the redux store is not loaded when it first renders the home screen and we get an error trying to render the Favorite List
 
   ourUserDatabase: {
-    myLists: { myMovies: { listName: "My Movies", movies: [] } },
+    favoriteMovies: { listName: "My Movies", movies: [] },
     customLists: {},
   },
   recentlyLaunched: "",

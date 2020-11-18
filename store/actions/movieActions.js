@@ -6,9 +6,23 @@ export const GET_MOVIE_DETAILS = "GET_MOVIE_DETAILS";
 export const CREATE_NEW_LIST = "CREATE_NEW_LIST";
 export const ADD_MOVIE_TO_LIST = "ADD_MOVie_TO_LIST";
 export const REMOVE_MOVIE_FROM_LIST = "REMOVE_MOVIE_FROM_LIST";
+export const SEARCH_MOVIE = "SEARCH_MOVIE";
+
+export const searchMovie = (searchTerm) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=929232d9b0b2af7e953d17654808d31f&language=en-US&query=${searchTerm}&include_adult=false`
+      );
+      const resData = await response.json();
+      dispatch({ type: SEARCH_MOVIE, resData });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
 
 export const removeMovieFromList = (loggedInUser, listId, entryId) => {
-  console.log(loggedInUser, listId, entryId);
   return async (dispatch) => {
     try {
       const response = await fetch(
@@ -49,6 +63,9 @@ export const addMovieToList = (loggedInUser, listId, movieKey, posterPath) => {
 
 //this will create a new list with a movie in it from the MovieDetailsScreen
 export const createNewList = (loggedInUser, listName, movieKey, posterPath) => {
+  const theDate = new Date();
+  const date =
+    theDate.getFullYear() + "/" + theDate.getMonth() + "/" + theDate.getDate();
   return async (dispatch) => {
     try {
       const response = await fetch(
@@ -60,6 +77,7 @@ export const createNewList = (loggedInUser, listName, movieKey, posterPath) => {
           },
           body: JSON.stringify({
             listName,
+            dateCreated: date,
           }),
         }
       );
@@ -112,7 +130,7 @@ export const handleFavoritesList = (
       if (method === "add") {
         console.log("add");
         const response = await fetch(
-          `https://project-listana.firebaseio.com/lists/${loggedInUser}/myLists/myMovies/movies.json`,
+          `https://project-listana.firebaseio.com/lists/${loggedInUser}/favoriteMovies/movies.json`,
           {
             method: "POST",
             headers: {
@@ -128,7 +146,7 @@ export const handleFavoritesList = (
         dispatch({ type: HANDLE_FAVORITE_LIST_ADD });
       } else if (method === "remove") {
         const response = await fetch(
-          `https://project-listana.firebaseio.com/lists/${loggedInUser}/myLists/myMovies/movies/${itemId}.json`,
+          `https://project-listana.firebaseio.com/lists/${loggedInUser}/favoriteMovies/movies/${itemId}.json`,
           {
             method: "DELETE",
           }
