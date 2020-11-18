@@ -27,8 +27,9 @@ const SearchScreen = (props) => {
   const navigation = useNavigation();
 
   const [searchValue, setSearchValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState("");
-
+  const [buttonPressed, setButtonPressed] = useState(false);
   const loggedInUser = useSelector((state) => state.authReducer.loggedInUser);
 
   const theFavoritesList = useSelector((state) =>
@@ -75,6 +76,11 @@ const SearchScreen = (props) => {
     (state) => state.movieReducer.searchResults.results
   );
 
+  useEffect(() => {
+    if ((searchValue != searchTerm) & (searchTerm != ""))
+      setButtonPressed(false);
+  }, [searchValue]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -102,7 +108,11 @@ const SearchScreen = (props) => {
               />
               <TouchableOpacity
                 onPress={async () => {
+                  setSearchTerm(searchValue);
                   await dispatch(movieActions.searchMovie(searchValue));
+                  //   it's important to have buttonPressed after geting the results
+                  //  to avoid seeing "No results" message until we fetch the results
+                  setButtonPressed(true);
                 }}
               >
                 <MaterialIcons
@@ -122,118 +132,138 @@ const SearchScreen = (props) => {
             ></View>
           </View>
         </View>
-        <View style={styles.contentContainer}>
-          <Text
-            style={{
-              fontSize: 18,
-              marginBottom: 10,
-              color: Colors.sixthColor,
-              textAlign: "center",
-            }}
-          >
-            Search results for {searchValue}
-          </Text>
-          <FlatList
-            style={styles.flatListContainer}
-            numColumns={3}
-            data={searchResults}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    selectedMovie != item.id
-                      ? setSelectedMovie(item.id)
-                      : setSelectedMovie("");
+        {/* we use this logic to determine if there was a search and the user modified the search input */}
+        {/* if so, we hide the results until the next time search button is pressed */}
+        {searchValue == searchTerm && buttonPressed && (
+          // this is for the cases when we don't have results
+          <View style={styles.contentContainer}>
+            {searchResults == "" &&
+              buttonPressed(
+                <View>
+                  <Text>There are no movies that matched your query.</Text>
+                </View>
+              )}
+            {/* //this is the container when there are results */}
+            {searchResults != "" && (
+              <View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    marginBottom: 10,
+                    color: Colors.sixthColor,
+                    textAlign: "center",
                   }}
-                  style={styles.posterContainer}
                 >
-                  <ImageBackground
-                    source={{
-                      uri: `http://image.tmdb.org/t/p/original/${item.poster_path}`,
-                    }}
-                    style={styles.posterImage}
-                  >
-                    {selectedMovie == item.id && (
-                      <View
-                        style={{
-                          backgroundColor: "rgba(22, 29, 45, 0.65)",
-                          paddingVertical: 10,
-                          borderWidth: 2,
-                          width: "100%",
-                          aspectRatio: 1 / 1.5,
-                          borderRadius: 10,
+                  Search results for {searchTerm}
+                </Text>
+                <FlatList
+                  style={styles.flatListContainer}
+                  numColumns={3}
+                  data={searchResults}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => {
+                          selectedMovie != item.id
+                            ? setSelectedMovie(item.id)
+                            : setSelectedMovie("");
                         }}
+                        style={styles.posterContainer}
                       >
-                        <View
-                          style={{
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "flex-start",
+                        <ImageBackground
+                          source={{
+                            uri: `http://image.tmdb.org/t/p/original/${item.poster_path}`,
                           }}
+                          style={styles.posterImage}
                         >
-                          <TouchableOpacity
-                            onPress={() => {
-                              favoriteHandler(item.id, item.poster_path);
-                            }}
-                          >
-                            <MaterialComunityIcons
-                              size={40}
-                              color={"orangered"}
-                              name={
-                                isThisMovieFavorite(item.id) == undefined
-                                  ? "heart-outline"
-                                  : "heart"
-                              }
-                            />
-                          </TouchableOpacity>
-                        </View>
-                        <View
-                          style={{
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await dispatch(movieActions.resetMovieCast());
-                              await dispatch(movieActions.movieCast(item.id));
-                              navigation.navigate("MovieDetails", {
-                                movieDetails: item,
-                                source: "search",
-                              });
-                              setSelectedMovie("");
-                            }}
-                            style={{
-                              justifyContent: "center",
-                              alignItems: "center",
-                              width: "80%",
-                              height: 25,
-                              backgroundColor: Colors.fifthColor,
-                              borderWidth: 1,
-                              borderColor: Colors.secondColor,
-                              borderRadius: 14,
-                            }}
-                          >
-                            <Text
+                          {selectedMovie == item.id && (
+                            <View
                               style={{
-                                fontSize: 15,
-                                color: Colors.sixthColor,
+                                backgroundColor: "rgba(22, 29, 45, 0.65)",
+                                paddingVertical: 10,
+                                borderWidth: 2,
+                                width: "100%",
+                                aspectRatio: 1 / 1.5,
+                                borderRadius: 10,
                               }}
                             >
-                              Details
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    )}
-                  </ImageBackground>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
+                              <View
+                                style={{
+                                  flex: 1,
+                                  alignItems: "center",
+                                  justifyContent: "flex-start",
+                                }}
+                              >
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    favoriteHandler(item.id, item.poster_path);
+                                  }}
+                                >
+                                  <MaterialComunityIcons
+                                    size={40}
+                                    color={"orangered"}
+                                    name={
+                                      isThisMovieFavorite(item.id) == undefined
+                                        ? "heart-outline"
+                                        : "heart"
+                                    }
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                              <View
+                                style={{
+                                  flex: 1,
+                                  alignItems: "center",
+                                  justifyContent: "flex-end",
+                                }}
+                              >
+                                <TouchableOpacity
+                                  onPress={async () => {
+                                    await dispatch(
+                                      movieActions.resetMovieCast()
+                                    );
+                                    await dispatch(
+                                      movieActions.movieCast(item.id)
+                                    );
+                                    navigation.navigate("MovieDetails", {
+                                      movieDetails: item,
+                                      source: "search",
+                                    });
+                                    setSelectedMovie("");
+                                  }}
+                                  style={{
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    width: "80%",
+                                    height: 25,
+                                    backgroundColor: Colors.fifthColor,
+                                    borderWidth: 1,
+                                    borderColor: Colors.secondColor,
+                                    borderRadius: 14,
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      color: Colors.sixthColor,
+                                    }}
+                                  >
+                                    Details
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          )}
+                        </ImageBackground>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              </View>
+            )}
+          </View>
+        )}
       </ImageBackground>
     </SafeAreaView>
   );

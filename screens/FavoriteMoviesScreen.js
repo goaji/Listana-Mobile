@@ -54,128 +54,142 @@ const FavoriteMoviesScreen = (props) => {
         </View>
         {emptyFavoriteList && (
           <View style={styles.emptyListContainer}>
-            <Text>Your list is empty</Text>
+            <Text
+              style={{
+                fontSize: 25,
+                color: Colors.sixthColor,
+                fontWeight: "500",
+                paddingBottom: 150,
+              }}
+            >
+              Your list is empty
+            </Text>
           </View>
         )}
-        <View style={styles.contentContainer}>
-          <FlatList
-            // columnWrapperStyle={{ justifyContent: "" }}
-            style={styles.flatListContainer}
-            numColumns={3}
-            data={favoritesList}
-            keyExtractor={(item) => item.id.toString()}
-            // pay atention to this: item with {}, otherwise it does not work
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    selectedMovie != item.data.itemId
-                      ? setSelectedMovie(item.data.itemId)
-                      : setSelectedMovie("");
-                  }}
-                  style={styles.posterContainer}
-                >
-                  <ImageBackground
-                    source={{
-                      uri: `http://image.tmdb.org/t/p/original/${item.data.posterPath}`,
+        {!emptyFavoriteList && (
+          <View style={styles.contentContainer}>
+            <FlatList
+              // columnWrapperStyle={{ justifyContent: "" }}
+              style={styles.flatListContainer}
+              numColumns={3}
+              data={favoritesList}
+              keyExtractor={(item) => item.id.toString()}
+              // pay atention to this: item with {}, otherwise it does not work
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      selectedMovie != item.data.itemId
+                        ? setSelectedMovie(item.data.itemId)
+                        : setSelectedMovie("");
                     }}
-                    style={styles.posterImage}
+                    style={styles.posterContainer}
                   >
-                    {/* <Image
+                    <ImageBackground
+                      source={{
+                        uri: `http://image.tmdb.org/t/p/original/${item.data.posterPath}`,
+                      }}
+                      style={styles.posterImage}
+                    >
+                      {/* <Image
                     style={styles.posterImage}
                     source={{
                       uri: `http://image.tmdb.org/t/p/original/${item.data.posterPath}`,
                     }}
                   /> */}
-                    {/* <Modal visible={selectedMovie == item.data.itemId}> */}
-                    {selectedMovie == item.data.itemId && (
-                      <View
-                        style={{
-                          backgroundColor: "rgba(22, 29, 45, 0.65)",
-                          paddingVertical: 10,
-                          borderWidth: 2,
-                          width: "100%",
-                          aspectRatio: 1 / 1.5,
-                          borderRadius: 10,
-                        }}
-                      >
+                      {/* <Modal visible={selectedMovie == item.data.itemId}> */}
+                      {selectedMovie == item.data.itemId && (
                         <View
                           style={{
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "flex-start",
+                            backgroundColor: "rgba(22, 29, 45, 0.65)",
+                            paddingVertical: 10,
+                            borderWidth: 2,
+                            width: "100%",
+                            aspectRatio: 1 / 1.5,
+                            borderRadius: 10,
                           }}
                         >
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await dispatch(
-                                movieActions.handleFavoritesList(
-                                  item.id,
-                                  "remove",
-                                  loggedInUser
-                                )
-                              );
-                              await dispatch(
-                                authActions.userDbInit(loggedInUser)
-                              );
-                            }}
-                          >
-                            <MaterialComunityIcons
-                              size={40}
-                              color={"red"}
-                              name={"heart"}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                        <View
-                          style={{
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <TouchableOpacity
-                            onPress={async () => {
-                              await dispatch(movieActions.resetMovieCast());
-                              await dispatch(
-                                movieActions.movieCast(item.data.itemId)
-                              );
-                              await dispatch(
-                                movieActions.getMovieDetails(item.data.itemId)
-                              );
-                              navigation.navigate("MovieDetails", {
-                                movieDetails: item.data,
-                                source: "fav",
-                              });
-                              setSelectedMovie("");
-                            }}
+                          <View
                             style={{
-                              justifyContent: "center",
+                              flex: 1,
                               alignItems: "center",
-                              width: "80%",
-                              height: 25,
-                              backgroundColor: Colors.fifthColor,
-                              borderWidth: 1,
-                              borderColor: Colors.secondColor,
-                              borderRadius: 14,
+                              justifyContent: "flex-start",
                             }}
                           >
-                            <Text
-                              style={{ fontSize: 15, color: Colors.sixthColor }}
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await dispatch(
+                                  movieActions.handleFavoritesList(
+                                    item.id,
+                                    "remove",
+                                    loggedInUser
+                                  )
+                                );
+                                await dispatch(
+                                  authActions.userDbInit(loggedInUser)
+                                );
+                              }}
                             >
-                              Details
-                            </Text>
-                          </TouchableOpacity>
+                              <MaterialComunityIcons
+                                size={40}
+                                color={"red"}
+                                name={"heart"}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <View
+                            style={{
+                              flex: 1,
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            <TouchableOpacity
+                              onPress={async () => {
+                                await dispatch(movieActions.resetMovieCast());
+                                await dispatch(
+                                  movieActions.movieCast(item.data.itemId)
+                                );
+                                await dispatch(
+                                  movieActions.getMovieDetails(item.data.itemId)
+                                );
+                                navigation.navigate("MovieDetails", {
+                                  movieDetails: item.data,
+                                  source: "fav",
+                                });
+                                setSelectedMovie("");
+                              }}
+                              style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "80%",
+                                height: 25,
+                                backgroundColor: Colors.fifthColor,
+                                borderWidth: 1,
+                                borderColor: Colors.secondColor,
+                                borderRadius: 14,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  color: Colors.sixthColor,
+                                }}
+                              >
+                                Details
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>
-                    )}
-                    {/* // </Modal> */}
-                  </ImageBackground>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
+                      )}
+                      {/* // </Modal> */}
+                    </ImageBackground>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        )}
         <View style={styles.underMenu}></View>
       </ImageBackground>
     </SafeAreaView>
@@ -218,6 +232,7 @@ const styles = StyleSheet.create({
   emptyListContainer: {
     padding: 10,
     justifyContent: "center",
+    alignItems: "center",
     flex: 9,
   },
   contentContainer: {
