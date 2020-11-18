@@ -7,7 +7,6 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
   Image,
 } from "react-native";
 import Colors from "../constants/colors";
@@ -131,7 +130,7 @@ const AccountScreen = (props) => {
                 <Text style={styles.leftSide}>Favorite movies:</Text>
               </View>
               <View style={styles.rightSideContainer}>
-                <Text style={styles.rightSide}> {favoritesList.length}</Text>
+                <Text style={styles.rightSide}>{favoritesList.length}</Text>
               </View>
             </View>
           </View>

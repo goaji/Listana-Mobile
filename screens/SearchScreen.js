@@ -7,7 +7,6 @@ import {
   ImageBackground,
   FlatList,
   TouchableOpacity,
-  Image,
   TextInput,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -17,7 +16,6 @@ import * as authActions from "../store/actions/authActions";
 import Colors from "../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
@@ -171,7 +169,9 @@ const SearchScreen = (props) => {
                         }}
                         style={styles.posterContainer}
                       >
+                        {/* find a solution for the movies without poster */}
                         <ImageBackground
+                          defaultSource={require("../assets/images/poster3.jpg")}
                           source={{
                             uri: `http://image.tmdb.org/t/p/original/${item.poster_path}`,
                           }}
@@ -294,45 +294,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.sixthColor,
     paddingHorizontal: 10,
   },
-  listData: {
-    padding: 10,
-    justifyContent: "space-between",
-  },
-  listPosterImage: {
-    height: "100%",
-    aspectRatio: 1 / 1.5,
-    borderWidth: 3,
-    borderColor: Colors.fifthColor,
-  },
-  listContainer: {
-    flexDirection: "row",
-    width: "100%",
-    height: 170,
-    borderWidth: 5,
-    borderColor: Colors.firstColor,
-    backgroundColor: Colors.secondColor,
-    marginBottom: 20,
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-  },
   flatlistContainer: { flex: 1 },
-  titleText: {
-    fontFamily: "roboto-bold",
-    fontSize: 30,
-    color: Colors.sixthColor,
-    letterSpacing: 1,
-  },
   headerContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
     justifyContent: "center",
     flex: 2,
     paddingTop: 10,
-  },
-  emptyListContainer: {
-    padding: 10,
-    flex: 1,
-    justifyContent: "center",
   },
   contentContainer: {
     padding: 10,
@@ -348,52 +316,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.fifthColor,
-  },
-  addListTitleText: {
-    marginBottom: 10,
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.firstColor,
-  },
-  textButton: {
-    textAlign: "center",
-    color: Colors.sixthColor,
-    fontSize: 17,
-    fontFamily: "roboto-medium",
-  },
-  addListButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: Colors.fourthColor,
-    width: width / 3,
-    height: 50,
-    justifyContent: "center",
-    borderRadius: 20,
-    borderWidth: 5,
-    borderColor: Colors.thirdColor,
-    marginHorizontal: 10,
-  },
-  modalPopup: {
-    paddingVertical: 20,
-    height: 210,
-    width: width * 0.9,
-    borderWidth: 5,
-    borderColor: Colors.firstColor,
-    backgroundColor: Colors.fifthColor,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(22, 29, 45, 0.85)",
   },
 });
 

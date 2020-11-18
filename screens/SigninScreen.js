@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   mainTitle: {
     fontSize: 50,
     color: Colors.sixthColor,

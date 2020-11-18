@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Modal,
 } from "react-native";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as movieActions from "../store/actions/movieActions";
@@ -16,7 +17,6 @@ import * as authActions from "../store/actions/authActions";
 import Colors from "../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
@@ -327,9 +327,3 @@ const styles = StyleSheet.create({
 });
 
 export default ListsScreen;
-
-{
-  /* <Modal visible={false}>
-      <MovieDetails hidePoster={moviePosterVisibilityHandler} />
-    </Modal> */
-}

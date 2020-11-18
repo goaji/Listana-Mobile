@@ -7,7 +7,6 @@ import {
   ImageBackground,
   FlatList,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as movieActions from "../store/actions/movieActions";
@@ -15,7 +14,6 @@ import * as authActions from "../store/actions/authActions";
 import Colors from "../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
@@ -214,7 +212,6 @@ const styles = StyleSheet.create({
     marginBottom: (width - 20) / 40,
   },
   flatListContainer: {},
-  movieContainer: {},
   posterImage: {
     overflow: "hidden",
     borderRadius: 10,
@@ -257,7 +254,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-
     backgroundColor: Colors.fifthColor,
   },
 });

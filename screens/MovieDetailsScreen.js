@@ -21,7 +21,6 @@ import Colors from "../constants/colors";
 import Genres from "../constants/movieGenresIds";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import colors from "../constants/colors";
 
 const { width, height } = Dimensions.get("window");
 
@@ -55,7 +54,6 @@ const MovieDetailsScreen = ({ route }) => {
   Object.keys(theCustomLists).forEach((key) =>
     customLists.push({ id: key, data: theCustomLists[key] })
   );
-  // const navigationSource = route.params.source;
 
   const movieKey =
     (route.params.source == "fav") | (route.params.source == "list")
@@ -148,15 +146,6 @@ const MovieDetailsScreen = ({ route }) => {
               />
             </TouchableOpacity>
           </View>
-          {/* <Image
-          style={styles.posterImage}
-          source={{
-            uri:
-              (route.params.source == "fav") | (route.params.source == "list")
-                ? `http://image.tmdb.org/t/p/w1280/${backdropPath}`
-                : `http://image.tmdb.org/t/p/w1280/${route.params.movieDetails.backdrop_path}`,
-          }}
-          /> */}
         </ImageBackground>
       </View>
       <View style={styles.textContainer}>
@@ -216,11 +205,6 @@ const MovieDetailsScreen = ({ route }) => {
                   style={{ alignItems: "center" }}
                   onPress={() => setIsAddListMode(false)}
                 >
-                  {/* <MaterialComunityIcons
-                    size={25}
-                    name="plus-circle-outline"
-                    color={Colors.sixthColor}
-                  /> */}
                   <Text style={styles.iconText}>Add to</Text>
                 </TouchableOpacity>
               </View>
@@ -276,7 +260,6 @@ const MovieDetailsScreen = ({ route }) => {
             </Text>
           </View>
           <View style={styles.movieGenres}>
-            {/* <MovieGenres genres={route.params.movieDetails.genre_ids} /> */}
             <FlatList
               alwaysBounceHorizontal={false}
               showsHorizontalScrollIndicator={false}
@@ -292,7 +275,6 @@ const MovieDetailsScreen = ({ route }) => {
                   ? (item) => item.id.toString()
                   : (item) => item.toString()
               }
-              // pay atention to this: item with {}, otherwise it does not work
               renderItem={({ item }) => {
                 return (
                   <View style={styles.movieGenreContainer}>
@@ -344,7 +326,6 @@ const MovieDetailsScreen = ({ route }) => {
               style={styles.theMovieCast}
               data={movieCast}
               keyExtractor={(item) => item.cast_id.toString()}
-              // pay atention to this: item with {}, otherwise it does not work
               renderItem={({ item }) => {
                 return (
                   <View style={styles.movieCastContainer}>
@@ -456,11 +437,14 @@ const MovieDetailsScreen = ({ route }) => {
                 <View style={{ alignItems: "center" }}>
                   {customLists != undefined && (
                     <View>
-                      <Text style={styles.addListTitleText}>Your lists:</Text>
+                      <Text style={styles.addListTitleText}>
+                        Select a list from bellow:
+                      </Text>
                       <View
                         style={{
+                          marginBottom: 20,
                           minHeight: height * 0.2,
-                          maxHeight: height * 0.55,
+                          maxHeight: height * 0.65,
                         }}
                       >
                         <FlatList
@@ -760,7 +744,6 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     height: 50,
-    // backgroundColor: "red",
   },
   buttonsContainer2: {
     borderWidth: 2,
@@ -806,9 +789,6 @@ const styles = StyleSheet.create({
     // height: height / 2.2,
   },
   posterContainer: {
-    // overflow: "hidden",
-    // flex: 5,
-
     alignItems: "center",
   },
   buttonsContainer: {
@@ -816,7 +796,6 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 4,
-
     padding: 10,
   },
   actorsImagesContainer: {
@@ -830,7 +809,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-
     backgroundColor: Colors.firstColor,
   },
 });
