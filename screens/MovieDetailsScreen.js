@@ -309,7 +309,7 @@ const MovieDetailsScreen = ({ route }) => {
           </View>
           <View style={styles.movieStats}>
             <Text style={styles.movieStatsText}>
-              {route.params.source | (route.params.source == "list")
+              {(route.params.source == "fav") | (route.params.source == "list")
                 ? parseInt(releaseDate)
                 : parseInt(route.params.movieDetails.release_date)}
             </Text>
@@ -460,18 +460,13 @@ const MovieDetailsScreen = ({ route }) => {
                       <View
                         style={{
                           minHeight: height * 0.2,
-                          maxHeight: height * 0.6,
-                          // height:
-                          //   customLists.length > 3
-                          //     ? height * 0.6
-                          //     : height * 0.3,
+                          maxHeight: height * 0.55,
                         }}
                       >
                         <FlatList
                           style={styles.myCustomLists}
                           data={customLists}
                           keyExtractor={(item) => item.id.toString()}
-                          // pay atention to this: item with {}, otherwise it does not work
                           renderItem={({ item }) => {
                             return (
                               <TouchableOpacity
@@ -481,39 +476,83 @@ const MovieDetailsScreen = ({ route }) => {
                               >
                                 <View
                                   style={{
-                                    justifyContent: "center",
+                                    marginBottom: 10,
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
                                     borderWidth: 2,
                                     width: width * 0.8,
-                                    height: 50,
+                                    height: 100,
+                                    borderBottomEndRadius: 20,
+                                    borderTopEndRadius: 20,
                                     backgroundColor:
                                       selectedList == item.id
                                         ? Colors.firstColor
-                                        : Colors.fifthColor,
-                                    marginVertical: 5,
-                                    paddingVertical: 3,
-                                    paddingHorizontal: 5,
+                                        : Colors.thirdColor,
                                   }}
                                 >
-                                  <Text
+                                  <View>
+                                    <Image
+                                      style={styles.listPosterImage}
+                                      defaultSource={require("../assets/images/poster2.jpg")}
+                                      source={
+                                        item.data.movies == undefined
+                                          ? require("../assets/images/poster3.jpg")
+                                          : {
+                                              uri: `http://image.tmdb.org/t/p/w185/${
+                                                Object.values(
+                                                  item.data.movies
+                                                )[0].posterPath
+                                              }`,
+                                            }
+                                      }
+                                    ></Image>
+                                  </View>
+                                  <View
                                     style={{
-                                      fontSize: 20,
-                                      fontWeight: "700",
-                                      color: Colors.sixthColor,
+                                      justifyContent: "space-between",
+                                      padding: 5,
                                     }}
                                   >
-                                    {item.data.listName}
-                                  </Text>
-                                  <Text
-                                    style={{
-                                      fontSize: 12,
-                                      color: Colors.sixthColor,
-                                    }}
-                                  >
-                                    Movies already in this list:{" "}
-                                    {item.data.movies == undefined
-                                      ? "0"
-                                      : Object.values(item.data.movies).length}
-                                  </Text>
+                                    <View
+                                      style={{
+                                        marginBottom: 10,
+                                        borderBottomWidth: 2,
+                                        borderBottomColor: Colors.sixthColor,
+                                      }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 20,
+                                          fontWeight: "700",
+                                          color: Colors.sixthColor,
+                                          paddingBottom: 5,
+                                        }}
+                                      >
+                                        {item.data.listName}
+                                      </Text>
+                                    </View>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: Colors.sixthColor,
+                                      }}
+                                    >
+                                      Created at {item.data.dateCreated}
+                                    </Text>
+
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: Colors.sixthColor,
+                                      }}
+                                    >
+                                      Movies already in this list:{" "}
+                                      {item.data.movies == undefined
+                                        ? "0"
+                                        : Object.values(item.data.movies)
+                                            .length}
+                                    </Text>
+                                  </View>
                                 </View>
                               </TouchableOpacity>
                             );
@@ -582,13 +621,20 @@ const MovieDetailsScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  listPosterImage: {
+    height: "100%",
+    aspectRatio: 1 / 1.5,
+    borderWidth: 3,
+    borderColor: Colors.fifthColor,
+    marginRight: 10,
+  },
   myCustomLists: { flexDirection: "row" },
   addListTitleText: {
-    marginBottom: 10,
+    marginBottom: 20,
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "700",
-    color: Colors.firstColor,
+    color: Colors.sixthColor,
   },
   textButton: {
     textAlign: "center",
